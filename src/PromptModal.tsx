@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/material";
 

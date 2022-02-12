@@ -5,6 +5,9 @@ import { DatabaseReference, update } from 'firebase/database';
 const style = {
     position: 'absolute',
     bottom: '30px',
+    left: '0',
+    right: '0',
+    textAlign: 'center',
 }
 
 interface OwnProps {
@@ -24,6 +27,7 @@ const PointButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         };
         return (
             <Button
+                key={option}
                 variant={option === selectedOption ? 'contained' : 'outlined'}
                 onClick={onClick}
             >

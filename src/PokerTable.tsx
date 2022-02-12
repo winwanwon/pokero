@@ -7,13 +7,6 @@ interface OwnProps {
     usersRef: DatabaseReference;
 }
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-};
-
 const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
     const { usersRef } = props;
     const [users, setUsers] = useState<UserDatabase>({});
@@ -49,13 +42,11 @@ const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
     });
 
     return (
-        <Container sx={style}>
-            <Stack
-                direction="row"
-                justifyContent="center">
-                {renderAttendees}
-            </Stack>
-        </Container>
+        <Stack
+            direction="row"
+            justifyContent="center">
+            {renderAttendees}
+        </Stack>
     );
 }
 

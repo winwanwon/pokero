@@ -9,7 +9,11 @@ import PromptModal from "./PromptModal";
 import PokerTable from "./PokerTable";
 import PointButtonGroup from "./PointButtonGroup";
 
-import "./App.css";
+import { Box } from "@mui/system";
+
+const style = {
+  height: '100%',
+}
 
 const App: React.FC = () => {
   const app = initializeApp(firebaseConfig);
@@ -40,7 +44,7 @@ const App: React.FC = () => {
   });
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="xs" sx={style}>
       <PromptModal
         name="name"
         open={modalOpen}
@@ -49,7 +53,9 @@ const App: React.FC = () => {
         onClose={handleClose}
         onSubmit={onSubmitName}
       />
-      {!modalOpen && <PokerTable usersRef={usersRef} />}
+      <Box display="flex" alignItems="center" justifyContent="center" width="100%" height="100%">
+        {!modalOpen && <PokerTable usersRef={usersRef} />}
+      </Box>
       <PointButtonGroup
         thisUserRef={thisUserRef}
       />
