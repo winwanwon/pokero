@@ -15,14 +15,15 @@ interface OwnProps {
 }
 
 const PointButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
-    const options = [0, 1, 2, 3, 5, 8, 13]
+    const options = [0, 1, 2, 3, 5, 8, 13];
     const [selectedOption, setSelectedOption] = useState<number>(-1);
 
     const renderOptions = options.map((option) => {
         const onClick = () => {
-            setSelectedOption(option);
+            const opt = option === selectedOption ? -1 : option;
+            setSelectedOption(opt);
             update(props.thisUserRef, {
-                selectedOption: option,
+                selectedOption: opt,
             });
         };
         return (

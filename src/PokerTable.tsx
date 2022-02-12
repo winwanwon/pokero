@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { DatabaseReference, onValue } from '@firebase/database';
 import { UserDatabase } from './types';
 
@@ -21,7 +21,14 @@ const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
     const renderAttendees = Object.keys(users).map((key) => {
         return (
             <Stack key={key} alignItems="center" marginX={2} marginY={2}>
-                <Box borderRadius={50} width={120} height={120} bgcolor="primary.main">
+                <Box
+                    borderRadius={50}
+                    width={120}
+                    height={120}
+                    bgcolor="primary.main"
+                    border={6}
+                    borderColor={users[key].selectedOption >= 0 ? 'secondary.main' : 'primary.main'}
+                >
                     <Typography
                         variant="h2"
                         color="white"
