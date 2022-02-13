@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Stack, Typography } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { DatabaseReference, onValue } from '@firebase/database';
-import { UserDatabase } from './types';
+import { User, UserDatabase } from './types';
 import { AppState } from './enum';
+import { getAverageFromResult, getModeFromResult } from './utils';
 
 interface OwnProps {
     appState: AppState;
@@ -33,6 +34,11 @@ const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
             dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
         });
     }, [stateRef, setAppState, setSelectedOption]);
+
+    const userList: User[] = Object.keys(users).map(key => users[key]);
+    const selectedUser = userList.filter(x => x.selectedOption > -1);
+    const averageEsimation = getAverageFromResult(selectedUser);
+    const modeEstimation = getModeFromResult(selectedUser);
 
     const renderAttendees = Object.keys(users).map((key) => {
         const selected = users[key].selectedOption > -1;
@@ -67,12 +73,38 @@ const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
         );
     });
 
+    const selectedUserDisplay = (
+        <Alert severity={selectedUser.length === userList.length ? 'success' : 'info'}>
+            {`${selectedUser.length}/${userList.length} has already selected`}
+        </Alert>
+    );
+
+    const summaryDisplay = (
+        <Alert variant="filled" severity="success">
+            <AlertTitle>
+                Result
+            </AlertTitle>
+            <Box>
+                Average: {!!averageEsimation ? averageEsimation : "-"}
+            </Box>
+            <Box>
+                Mode: {modeEstimation}
+            </Box>
+        </Alert>
+    );
+
     return (
-        <Stack
-            direction="row"
-            justifyContent="center">
-            {renderAttendees}
-        </Stack>
+        <>
+            <Stack direction="column" spacing={4}>
+                <Stack
+                    direction="row"
+                    justifyContent="center">
+                    {renderAttendees}
+                </Stack>
+                {appState === AppState.Init && selectedUserDisplay}
+                {appState === AppState.Revealed && summaryDisplay}
+            </Stack>
+        </>
     );
 }
 
