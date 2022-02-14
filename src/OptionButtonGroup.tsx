@@ -11,9 +11,9 @@ const style = {
 }
 
 interface OwnProps {
+    appState: AppState;
     selectedOption: number;
     setSelectedOption: (option: number) => void;
-    appState: AppState;
     onOptionSelect: (option: number) => void;
 }
 

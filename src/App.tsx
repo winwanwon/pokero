@@ -97,7 +97,7 @@ const App: React.FC = () => {
     remove(thisUserRef);
   });
 
-  const pokerTable = !modalOpen &&
+  const summary = !modalOpen &&
     <Summary
       appState={appState}
       uuid={uuid}
@@ -121,7 +121,7 @@ const App: React.FC = () => {
         width="100%"
         height="100%"
       >
-        {pokerTable}
+        {summary}
       </Box>
       <CommandButtons
         appState={appState}

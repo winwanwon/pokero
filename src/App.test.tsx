@@ -1,9 +1,12 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
 import App from './App';
+import { shallow } from 'enzyme';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe('App', () => {
+  it('should render critical components', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.find('PromptModal')).toHaveLength(1);
+    expect(wrapper.find('CommandButtons')).toHaveLength(1);
+    expect(wrapper.find('OptionButtonGroup')).toHaveLength(1);
+    expect(wrapper.find('Summary')).toHaveLength(0);
+  });
 });
