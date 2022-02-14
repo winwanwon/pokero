@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Button, ButtonGroup } from '@mui/material';
-import { DatabaseReference, update } from 'firebase/database';
 import { AppState } from './enum';
 
 const style = {
@@ -15,20 +14,18 @@ interface OwnProps {
     selectedOption: number;
     setSelectedOption: (option: number) => void;
     appState: AppState;
-    thisUserRef: DatabaseReference;
+    onOptionSelect: (option: number) => void;
 }
 
-const PointButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
-    const { selectedOption, setSelectedOption, appState } = props;
+const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
+    const { selectedOption, setSelectedOption, appState, onOptionSelect } = props;
     const options = [0, 1, 2, 3, 5, 8, 13];
 
     const renderOptions = options.map((option) => {
         const onClick = () => {
             const opt = option === selectedOption ? -1 : option;
             setSelectedOption(opt);
-            update(props.thisUserRef, {
-                selectedOption: opt,
-            });
+            onOptionSelect(opt);
         };
         return (
             <Button
@@ -50,4 +47,4 @@ const PointButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     )
 }
 
-export default PointButtonGroup;
+export default OptionButtonGroup;

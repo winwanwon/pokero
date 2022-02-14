@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Button } from '@mui/material';
-import { DatabaseReference, get, set, update } from 'firebase/database';
 import { AppState } from './enum';
 
 const style = {
@@ -13,50 +12,19 @@ const style = {
 
 interface OwnProps {
     appState: AppState;
-    setAppState: (appState: AppState) => void;
-    usersRef: DatabaseReference;
-    stateRef: DatabaseReference;
+    onAppStateUpdate: (appState: AppState) => void;
+    resetAppState: () => void;
 }
 
 const CommandButtons: React.FC<OwnProps> = (props: OwnProps) => {
-    const { stateRef, usersRef, appState, setAppState } = props;
-
-    useEffect(() => {
-        get(stateRef).then((snapshot) => {
-            if (!snapshot.exists()) {
-                set(stateRef, {
-                    currentState: AppState.Init,
-                });
-            } else {
-                setAppState(snapshot.val().currentState);
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-    });
+    const { appState, onAppStateUpdate, resetAppState } = props;
 
     const onClick = () => {
         if (appState === AppState.Init) {
-            setAppState(AppState.Revealed);
-            update(stateRef, {
-                currentState: AppState.Revealed,
-            });
+            onAppStateUpdate(AppState.Revealed);
         } else {
-            setAppState(AppState.Init);
-            update(stateRef, {
-                currentState: AppState.Init,
-            });
-            get(usersRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    Object.keys(snapshot.val()).forEach((key: string) => {
-                        const updates = {} as any;
-                        updates['/' + key + '/selectedOption/'] = -1;
-                        update(usersRef, updates);
-                    });
-                }
-            }).catch((error) => {
-                console.error(error);
-            });
+            onAppStateUpdate(AppState.Init);
+            resetAppState();
         }
     };
 

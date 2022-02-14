@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, remove, set } from "firebase/database";
+import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
 import { Box, Container } from "@mui/material";
-import { firebaseConfig } from "./config";
 
+import { firebaseConfig } from "./config";
 import PromptModal from "./PromptModal";
-import PokerTable from "./PokerTable";
-import PointButtonGroup from "./PointButtonGroup";
+import Summary from "./Summary";
+import OptionButtonGroup from "./OptionButtonGroup";
 import CommandButtons from "./CommandButtons";
 import { AppState } from "./enum";
-
-const style = {
-  height: '100%',
-}
+import { UserDatabase } from "./types";
 
 const App: React.FC = () => {
   const app = initializeApp(firebaseConfig);
@@ -25,10 +22,63 @@ const App: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(true);
   const [appState, setAppState] = useState<AppState>(AppState.Init);
   const [selectedOption, setSelectedOption] = useState<number>(-1);
+  const [users, setUsers] = useState<UserDatabase>({});
 
   const usersRef = ref(database, 'users/');
   const thisUserRef = ref(database, 'users/' + uuid);
   const stateRef = ref(database, 'state/');
+
+  useEffect(() => {
+    onValue(usersRef, (snapshot) => {
+      const dbSnap = snapshot.val();
+      snapshot.size && setUsers(dbSnap);
+    });
+
+    onValue(stateRef, (snapshot) => {
+      const dbSnap = snapshot.val();
+      setAppState(dbSnap.currentState);
+      dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
+    });
+
+    get(stateRef).then((snapshot) => {
+      if (!snapshot.exists()) {
+        set(stateRef, {
+          currentState: AppState.Init,
+        });
+      } else {
+        setAppState(snapshot.val().currentState);
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }, []);
+
+  const onOptionSelect = (option: number) => {
+    update(thisUserRef, {
+      selectedOption: option,
+    });
+  };
+
+  const onAppStateUpdate = (appState: AppState) => {
+    setAppState(appState);
+    update(stateRef, {
+      currentState: appState,
+    });
+  }
+
+  const resetAppState = () => {
+    get(usersRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        Object.keys(snapshot.val()).forEach((key: string) => {
+          const updates = {} as any;
+          updates['/' + key + '/selectedOption/'] = -1;
+          update(usersRef, updates);
+        });
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
 
   const handleClose = () => { };
   const onSubmitName = () => {
@@ -48,17 +98,14 @@ const App: React.FC = () => {
   });
 
   const pokerTable = !modalOpen &&
-    <PokerTable
-      usersRef={usersRef}
-      stateRef={stateRef}
-      setSelectedOption={setSelectedOption}
-      uuid={uuid}
+    <Summary
       appState={appState}
-      setAppState={setAppState}
+      uuid={uuid}
+      users={users}
     />;
 
   return (
-    <Container maxWidth="xs" sx={style}>
+    <Container maxWidth="xs" sx={{ height: '100%' }}>
       <PromptModal
         name="name"
         open={modalOpen}
@@ -78,15 +125,14 @@ const App: React.FC = () => {
       </Box>
       <CommandButtons
         appState={appState}
-        setAppState={setAppState}
-        usersRef={usersRef}
-        stateRef={stateRef}
+        onAppStateUpdate={onAppStateUpdate}
+        resetAppState={resetAppState}
       />
-      <PointButtonGroup
+      <OptionButtonGroup
         selectedOption={selectedOption}
         setSelectedOption={setSelectedOption}
         appState={appState}
-        thisUserRef={thisUserRef}
+        onOptionSelect={onOptionSelect}
       />
     </Container>
   );

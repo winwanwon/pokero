@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Alert, AlertTitle, Box, Stack, Typography } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import { DatabaseReference, onValue } from '@firebase/database';
+
 import { User, UserDatabase } from './types';
 import { AppState } from './enum';
 import { getAverageFromResult, getModeFromResult } from './utils';
 
 interface OwnProps {
     appState: AppState;
-    setAppState: (appState: AppState) => void;
-    setSelectedOption: (option: number) => void;
-    usersRef: DatabaseReference;
-    stateRef: DatabaseReference;
+    users: UserDatabase;
     uuid: string;
 }
 
-const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
-    const { appState, setAppState, setSelectedOption, usersRef, stateRef, uuid } = props;
-    const [users, setUsers] = useState<UserDatabase>({});
-
-    useEffect(() => {
-        onValue(usersRef, (snapshot) => {
-            const dbSnap = snapshot.val();
-            snapshot.size && setUsers(dbSnap);
-        });
-    }, [usersRef, uuid]);
-
-    useEffect(() => {
-        onValue(stateRef, (snapshot) => {
-            const dbSnap = snapshot.val();
-            setAppState(dbSnap.currentState);
-            dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
-        });
-    }, [stateRef, setAppState, setSelectedOption]);
+const Summary: React.FC<OwnProps> = (props: OwnProps) => {
+    const { appState, uuid, users } = props;
 
     const userList: User[] = Object.keys(users).map(key => users[key]);
     const selectedUser = userList.filter(x => x.selectedOption > -1);
@@ -108,4 +89,4 @@ const PokerTable: React.FC<OwnProps> = (props: OwnProps) => {
     );
 }
 
-export default PokerTable;
+export default Summary;
