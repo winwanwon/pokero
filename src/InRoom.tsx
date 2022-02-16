@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
@@ -7,12 +7,12 @@ import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import TagIcon from '@mui/icons-material/Tag';
 
 import { firebaseConfig } from "./config";
-import PromptModal from "./PromptModal";
-import Summary from "./Summary";
-import OptionButtonGroup from "./OptionButtonGroup";
-import CommandButtons from "./CommandButtons";
 import { AppState } from "./enum";
 import { UserDatabase } from "./types";
+import PromptModal from "./components/PromptModal";
+import OptionButtonGroup from "./components/OptionButtonGroup";
+import CommandButtons from "./components/CommandButtons";
+import Summary from "./Summary";
 
 const InRoom: React.FC = () => {
     const app = initializeApp(firebaseConfig);
@@ -119,9 +119,9 @@ const InRoom: React.FC = () => {
                 <Container>
                     <Toolbar disableGutters>
                         <Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
-                            <Link to="/">
+                            <a href="/">
                                 <img src="/pokero-logo-white.png" alt="POKERO" height="34" />
-                            </Link>
+                            </a>
                             <Box display="flex" alignItems="center">
                                 <TagIcon />
                                 <Typography variant="h6">

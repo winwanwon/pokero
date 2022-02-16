@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, ButtonGroup } from '@mui/material';
-import { AppState } from './enum';
+import { AppState } from '../enum';
 
 const style = {
     position: 'absolute',
