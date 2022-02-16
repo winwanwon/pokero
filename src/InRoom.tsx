@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
@@ -119,9 +119,9 @@ const InRoom: React.FC = () => {
                 <Container>
                     <Toolbar disableGutters>
                         <Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
-                            <Typography variant="h6">
-                                Ploker
-                            </Typography>
+                            <Link to="/">
+                                <img src="/pokero-logo-white.png" alt="POKERO" height="34" />
+                            </Link>
                             <Box display="flex" alignItems="center">
                                 <TagIcon />
                                 <Typography variant="h6">

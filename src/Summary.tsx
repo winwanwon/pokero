@@ -30,11 +30,11 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                     width={108}
                     height={108}
                     border={6}
-                    borderColor={selected ? 'primary.main' : 'secondary.main'}
+                    borderColor={selected ? 'success.light' : 'warning.light'}
                 >
                     <Typography
                         variant="h2"
-                        color={selected ? 'primary' : 'secondary'}
+                        color={selected ? 'success.main' : 'warning.main'}
                         fontWeight={500}
                         textAlign="center"
                         display="flex"
@@ -42,7 +42,7 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                         justifyContent="center"
                         height="100%"
                     >
-                        {appState === AppState.Init && (selected ? <DoneIcon color="primary" sx={{ fontSize: 90 }} /> : <HourglassEmptyIcon color="secondary" sx={{ fontSize: 72 }} />)}
+                        {appState === AppState.Init && (selected ? <DoneIcon color="success" sx={{ fontSize: 90 }} /> : <HourglassEmptyIcon color="warning" sx={{ fontSize: 72 }} />)}
                         {appState === AppState.Revealed && (selected ? users[key].selectedOption : "-")}
                     </Typography>
                 </Box>

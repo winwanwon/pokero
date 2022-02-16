@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Container, InputAdornment, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, InputAdornment, Stack, TextField } from "@mui/material";
 import TagIcon from '@mui/icons-material/Tag';
 
 const App: React.FC = () => {
   let navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomName(e.target.value.toLowerCase());
+    if (e.target.value.match("^[a-zA-Z0-9]*$") != null) {
+      setRoomName(e.target.value.toLowerCase());
+    }
   }
 
   const onJoinButtonClick = () => {
@@ -23,10 +25,10 @@ const App: React.FC = () => {
         width="100%"
         height="100%"
       >
-        <Stack spacing={2} justifyContent={'center'}>
-          <Typography variant="h5" gutterBottom component="div">
-            Welcome to Ploker
-          </Typography>
+        <Stack spacing={2} justifyContent="center" textAlign="center">
+          <Box marginBottom={2}>
+            <img src="/pokero-logo.png" alt="POKERO" width="320" />
+          </Box>
           <TextField
             placeholder="Enter room name here"
             variant="outlined"
@@ -38,6 +40,7 @@ const App: React.FC = () => {
               ),
             }}
             onChange={onChange}
+            value={roomName}
           />
           <Button variant="contained" onClick={onJoinButtonClick}>Join</Button>
         </Stack>
