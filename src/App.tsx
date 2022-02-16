@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Container, InputAdornment, Stack, TextField } from "@mui/material";
+import { Box, Button, Container, InputAdornment, Link, Stack, TextField, Typography } from "@mui/material";
 import TagIcon from '@mui/icons-material/Tag';
 
 const App: React.FC = () => {
@@ -17,35 +17,49 @@ const App: React.FC = () => {
   };
 
   return (
-    <Container sx={{ height: '100%' }}>
+    <>
+      <Container sx={{ height: '100%' }}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          width="100%"
+          height="100%"
+        >
+          <Stack spacing={2} justifyContent="center" textAlign="center">
+            <Box marginBottom={2}>
+              <img src="/pokero-logo.png" alt="POKERO" width="320" />
+            </Box>
+            <TextField
+              placeholder="Enter room name here"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <TagIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={onChange}
+              value={roomName}
+            />
+            <Button variant="contained" disabled={!roomName} onClick={onJoinButtonClick}>Join</Button>
+          </Stack>
+        </Box>
+      </Container>
       <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
+        position="absolute"
+        bottom={10}
         width="100%"
-        height="100%"
+        display="flex"
+        justifyContent="center"
+        color="gray"
       >
-        <Stack spacing={2} justifyContent="center" textAlign="center">
-          <Box marginBottom={2}>
-            <img src="/pokero-logo.png" alt="POKERO" width="320" />
-          </Box>
-          <TextField
-            placeholder="Enter room name here"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <TagIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={onChange}
-            value={roomName}
-          />
-          <Button variant="contained" onClick={onJoinButtonClick}>Join</Button>
-        </Stack>
+        <Typography variant="caption">
+          developed by Warat Kaweepornpoj, <Link href="https://github.com/winwanwon/pokero" target="_blank" rel="noreferrer">Github</Link> contributions are welcome!
+        </Typography>
       </Box>
-    </Container>
+    </>
   );
 }
 
