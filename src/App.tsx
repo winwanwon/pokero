@@ -23,26 +23,25 @@ const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(AppState.Init);
   const [selectedOption, setSelectedOption] = useState<number>(-1);
   const [users, setUsers] = useState<UserDatabase>({});
-
-  const usersRef = ref(database, 'users/');
-  const thisUserRef = ref(database, 'users/' + uuid);
-  const stateRef = ref(database, 'state/');
+  const usersDbPath = 'users/';
+  const stateDbPath = 'state/';
+  const thisUserDbPath = 'users/' + uuid;
 
   useEffect(() => {
-    onValue(usersRef, (snapshot) => {
+    onValue(ref(database, usersDbPath), (snapshot) => {
       const dbSnap = snapshot.val();
       snapshot.size && setUsers(dbSnap);
     });
 
-    onValue(stateRef, (snapshot) => {
+    onValue(ref(database, stateDbPath), (snapshot) => {
       const dbSnap = snapshot.val();
       setAppState(dbSnap.currentState);
       dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
     });
 
-    get(stateRef).then((snapshot) => {
+    get(ref(database, stateDbPath)).then((snapshot) => {
       if (!snapshot.exists()) {
-        set(stateRef, {
+        set(ref(database, stateDbPath), {
           currentState: AppState.Init,
         });
       } else {
@@ -51,28 +50,28 @@ const App: React.FC = () => {
     }).catch((error) => {
       console.error(error);
     });
-  }, []);
+  }, [database]);
 
   const onOptionSelect = (option: number) => {
-    update(thisUserRef, {
+    update(ref(database, thisUserDbPath), {
       selectedOption: option,
     });
   };
 
   const onAppStateUpdate = (appState: AppState) => {
     setAppState(appState);
-    update(stateRef, {
+    update(ref(database, stateDbPath), {
       currentState: appState,
     });
   }
 
   const resetAppState = () => {
-    get(usersRef).then((snapshot) => {
+    get(ref(database, usersDbPath)).then((snapshot) => {
       if (snapshot.exists()) {
         Object.keys(snapshot.val()).forEach((key: string) => {
           const updates = {} as any;
           updates['/' + key + '/selectedOption/'] = -1;
-          update(usersRef, updates);
+          update(ref(database, usersDbPath), updates);
         });
       }
     }).catch((error) => {
@@ -85,7 +84,7 @@ const App: React.FC = () => {
     if (name) {
       window.localStorage.setItem("name", name);
       setModalOpen(false);
-      set(thisUserRef, {
+      set(ref(database, thisUserDbPath), {
         name,
         selectedOption: -1,
       });
@@ -94,7 +93,7 @@ const App: React.FC = () => {
 
   window.addEventListener("beforeunload", (ev) => {
     ev.preventDefault();
-    remove(thisUserRef);
+    remove(ref(database, thisUserDbPath));
   });
 
   const summary = !modalOpen &&
