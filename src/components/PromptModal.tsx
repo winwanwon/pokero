@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/material";
+import { isValidUserName } from "../utils";
 
 interface OwnProps {
     name: string;
@@ -25,8 +26,14 @@ const style = {
 
 const PromptModal = (props: OwnProps) => {
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.setValue(e.target.value);
+        isValidUserName(e.target.value) && props.setValue(e.target.value);
     }
+
+    const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            props.onSubmit();
+        }
+    };
 
     return (
         <Container maxWidth="xs">
@@ -41,7 +48,7 @@ const PromptModal = (props: OwnProps) => {
                         <Typography variant="h5" gutterBottom component="div">
                             {props.value ? `Welcome! ${props.value}` : "Enter your name to proceed"}
                         </Typography>
-                        <TextField label="Name" variant="filled" onChange={onInputChange} value={props.value} />
+                        <TextField label="Name" variant="filled" onChange={onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
                         <Button variant="contained" onClick={props.onSubmit}>Enter</Button>
                     </Stack>
                 </Box>

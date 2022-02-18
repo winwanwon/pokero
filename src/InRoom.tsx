@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
+import { Alert, AppBar, Box, Container, LinearProgress, Stack, Toolbar, Typography } from "@mui/material";
 import TagIcon from '@mui/icons-material/Tag';
 
 import { firebaseConfig } from "./config";
 import { AppState } from "./enum";
-import { UserDatabase } from "./types";
+import { User, UserDatabase } from "./types";
 import PromptModal from "./components/PromptModal";
 import OptionButtonGroup from "./components/OptionButtonGroup";
 import CommandButtons from "./components/CommandButtons";
-import Summary from "./Summary";
+import Summary from "./components/Summary";
+import { getAverageFromResult, getModeFromResult, isValidRoomName } from "./utils";
 
 const InRoom: React.FC = () => {
     const app = initializeApp(firebaseConfig);
@@ -21,7 +22,7 @@ const InRoom: React.FC = () => {
     window.sessionStorage.setItem("uuid", uuid);
 
     const params = useParams();
-    const roomName = params.roomName?.toLowerCase();
+    const roomName = params.roomName?.toLowerCase() || "";
     const [name, setName] = useState(window.localStorage.getItem("name") || "");
     const [modalOpen, setModalOpen] = useState(true);
     const [appState, setAppState] = useState<AppState>(AppState.Init);
@@ -30,6 +31,13 @@ const InRoom: React.FC = () => {
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isValidRoomName(roomName)) {
+            navigate('/');
+        }
+    }, [roomName, navigate]);
 
     useEffect(() => {
         onValue(ref(database, usersDbPath), (snapshot) => {
@@ -113,6 +121,79 @@ const InRoom: React.FC = () => {
             users={users}
         />;
 
+    const userList: User[] = Object.keys(users).map(key => users[key]);
+    const selectedUser = userList.filter(x => x.selectedOption > -1);
+    const averageEsimation = getAverageFromResult(selectedUser);
+    const modeEstimation = getModeFromResult(selectedUser);
+
+    const selectedUserDisplay = (
+        <Alert severity={selectedUser.length === userList.length ? 'success' : 'info'}>
+            {`${selectedUser.length}/${userList.length} already selected`}
+        </Alert>
+    );
+
+    const summaryDisplay = (
+        <Box border={1} borderColor="secondary.main" borderRadius={2} p={2}>
+            <Box mb={2}>
+                <Typography variant="subtitle2" mb={1}>
+                    Average: {!!averageEsimation ? averageEsimation.toFixed(1) : "-"}
+                </Typography>
+                <LinearProgress variant="determinate" color="secondary" value={(!!averageEsimation ? averageEsimation / 13 : 0) * 100} />
+            </Box>
+            <Box width="100%">
+                <Typography variant="subtitle2" mb={1}>
+                    Mode: {modeEstimation >= 0 ? modeEstimation : "-"}
+                </Typography>
+                <LinearProgress variant="determinate" color="secondary" value={(modeEstimation >= 0 ? modeEstimation / 13 : 0) * 100} />
+            </Box>
+        </Box>
+    );
+
+    const optionButtons = (
+        <OptionButtonGroup
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+            appState={appState}
+            onOptionSelect={onOptionSelect}
+        />
+    );
+
+    const content = (
+        <>
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                width="100%"
+                height="100%"
+            >
+                {summary}
+            </Box>
+            <Box
+                position="absolute"
+                bottom={30}
+                left={0}
+                right={0}
+                display="flex"
+                justifyContent="center"
+            >
+                <Stack
+                    spacing={2}
+                    minWidth={380}
+                >
+                    {appState === AppState.Init && selectedUserDisplay}
+                    {appState === AppState.Revealed && summaryDisplay}
+                    {appState === AppState.Init && optionButtons}
+                    <CommandButtons
+                        appState={appState}
+                        onAppStateUpdate={onAppStateUpdate}
+                        resetAppState={resetAppState}
+                    />
+                </Stack>
+            </Box>
+        </>
+    );
+
     return (
         <>
             <AppBar position="absolute">
@@ -141,26 +222,7 @@ const InRoom: React.FC = () => {
                     onClose={handleClose}
                     onSubmit={onSubmitName}
                 />
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    width="100%"
-                    height="100%"
-                >
-                    {summary}
-                </Box>
-                <CommandButtons
-                    appState={appState}
-                    onAppStateUpdate={onAppStateUpdate}
-                    resetAppState={resetAppState}
-                />
-                <OptionButtonGroup
-                    selectedOption={selectedOption}
-                    setSelectedOption={setSelectedOption}
-                    appState={appState}
-                    onOptionSelect={onOptionSelect}
-                />
+                {!modalOpen && content}
             </Container>
         </>
     );

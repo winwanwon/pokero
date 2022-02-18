@@ -1,15 +1,6 @@
 import React from 'react';
-import { Box, Button, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup } from '@mui/material';
 import { AppState } from '../enum';
-
-const style = {
-    position: 'absolute',
-    bottom: '30px',
-    left: '0',
-    right: '0',
-    textAlign: 'center',
-}
-
 interface OwnProps {
     appState: AppState;
     selectedOption: number;
@@ -39,12 +30,10 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     });
 
     return (
-        <Box sx={style}>
-            <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
-                {renderOptions}
-            </ButtonGroup>
-        </Box>
-    )
+        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
+            {renderOptions}
+        </ButtonGroup>
+    );
 }
 
 export default OptionButtonGroup;

@@ -1,19 +1,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import InRoom from './InRoom';
 import './index.css';
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#69b7ff',
+      main: '#3299ff',
+      dark: '#2e78dd',
+      contrastText: '#FEFEFE',
+    },
+    secondary: {
+      light: '#e6c0fe',
+      main: '#c369ff',
+      dark: '#a31ff4',
+      contrastText: '#FEFEFE',
+    },
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
+    <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/:roomName" element={<InRoom />} />
         </Routes>
       </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

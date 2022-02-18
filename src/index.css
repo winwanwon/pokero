@@ -10,4 +10,32 @@ body {
     "Cantarell", "Fira Sans", "Droid Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #ecf0f1;
+}
+
+img.responsive {
+  width: 90%;
+  max-width: 380px;
+  height: auto;
+}
+
+.card {
+  background: #fefefe;
+  box-shadow: 0 4px 8px 1px rgba(85, 85, 85, 0.5);
+  border-radius: 16px;
+  position: relative;
+}
+
+.card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  padding-bottom: 20px;
+  background: linear-gradient(to right, #329aff, #c369ff);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
 }

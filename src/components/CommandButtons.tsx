@@ -1,14 +1,6 @@
 import React from 'react';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { AppState } from '../enum';
-
-const style = {
-    position: 'absolute',
-    bottom: '100px',
-    left: '0',
-    right: '0',
-    textAlign: 'center',
-}
 
 interface OwnProps {
     appState: AppState;
@@ -39,11 +31,9 @@ const CommandButtons: React.FC<OwnProps> = (props: OwnProps) => {
     }
 
     return (
-        <Box sx={style}>
-            <Button variant="contained" color="secondary" onClick={onClick}>
-                {getButtonContent(appState)}
-            </Button>
-        </Box>
+        <Button variant="contained" color={appState === AppState.Init ? 'primary' : 'secondary'} onClick={onClick}>
+            {getButtonContent(appState)}
+        </Button>
     )
 }
 
