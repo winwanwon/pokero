@@ -10,11 +10,12 @@ import ShareIcon from '@mui/icons-material/Share';
 import { firebaseConfig } from "./config";
 import { AppState } from "./enum";
 import { User, UserDatabase } from "./types";
+import { getAverageFromResult, getModeFromResult, isValidRoomName } from "./utils";
+
 import PopUpModal from "./components/PopUpModal";
 import OptionButtonGroup from "./components/OptionButtonGroup";
 import CommandButtons from "./components/CommandButtons";
 import Summary from "./components/Summary";
-import { getAverageFromResult, getModeFromResult, isValidRoomName } from "./utils";
 
 const InRoom: React.FC = () => {
     const app = initializeApp(firebaseConfig);
@@ -30,6 +31,7 @@ const InRoom: React.FC = () => {
     const [appState, setAppState] = useState<AppState>(AppState.Init);
     const [selectedOption, setSelectedOption] = useState<number>(-1);
     const [users, setUsers] = useState<UserDatabase>({});
+    const [sudoMode, setSudoMode] = useState<boolean>(false);
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
@@ -45,6 +47,8 @@ const InRoom: React.FC = () => {
         onValue(ref(database, usersDbPath), (snapshot) => {
             const dbSnap = snapshot.val();
             snapshot.size && setUsers(dbSnap);
+
+            !dbSnap[uuid] && setModalOpen(true);
         });
 
         onValue(ref(database, stateDbPath), (snapshot) => {
@@ -64,7 +68,7 @@ const InRoom: React.FC = () => {
         }).catch((error) => {
             console.error(error);
         });
-    }, [database, stateDbPath, usersDbPath]);
+    }, [database, stateDbPath, usersDbPath, uuid]);
 
     const onOptionSelect = (option: number) => {
         update(ref(database, thisUserDbPath), {
@@ -104,6 +108,10 @@ const InRoom: React.FC = () => {
         }
     };
 
+    const onRemove = (uuid: string) => {
+        remove(ref(database, usersDbPath + uuid));
+    }
+
     window.addEventListener("beforeunload", (ev) => {
         ev.preventDefault();
         remove(ref(database, thisUserDbPath));
@@ -113,6 +121,14 @@ const InRoom: React.FC = () => {
                 remove(ref(database, stateDbPath));
             }
         });
+    });
+
+    // Enable SUDO mode on alt button down
+    document.body.addEventListener('keydown', function (event) {
+        setSudoMode(event.altKey);
+    });
+    document.body.addEventListener('keyup', function (event) {
+        setSudoMode(event.altKey);
     });
 
     const copyUrl = () => {
@@ -171,7 +187,7 @@ const InRoom: React.FC = () => {
                 width="100%"
                 height="100%"
             >
-                {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} />}
+                {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />}
             </Box>
             <Box
                 position="absolute"

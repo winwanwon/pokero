@@ -12,9 +12,7 @@ const App: React.FC = () => {
   }
 
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      onJoinButtonClick();
-    }
+    e.key === "Enter" && onJoinButtonClick();
   };
 
   const onJoinButtonClick = () => {

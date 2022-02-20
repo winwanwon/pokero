@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import PersonIcon from '@mui/icons-material/Person';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import { UserDatabase } from '../types';
 import { AppState } from '../enum';
@@ -11,10 +12,12 @@ interface OwnProps {
     appState: AppState;
     users: UserDatabase;
     uuid: string;
+    showDeleteButton: boolean;
+    onRemove: (uuid: string) => void;
 }
 
 const Summary: React.FC<OwnProps> = (props: OwnProps) => {
-    const { appState, uuid, users } = props;
+    const { appState, uuid, users, onRemove } = props;
 
     const userCount = Object.keys(users).length;
 
@@ -23,6 +26,10 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
         const isInit = appState === AppState.Init;
         const isRevealed = appState === AppState.Revealed;
         const confirmedValue = selected || isRevealed;
+
+        const removePlayer = () => {
+            onRemove(key)
+        }
 
         return (
             <Box
@@ -67,6 +74,13 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                     <Typography variant="h6" textAlign="center" color={key === uuid ? 'primary' : 'text'}>
                         {users[key].name}
                     </Typography>
+                </Box>
+                <Box
+                    position="absolute"
+                    top={0}
+                    right={0}
+                >
+                    {props.showDeleteButton && key !== uuid && <IconButton component="span" onClick={removePlayer}><ClearIcon /></IconButton>}
                 </Box>
             </Box>
         );
