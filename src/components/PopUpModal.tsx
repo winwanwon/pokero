@@ -51,7 +51,7 @@ const PopUpModal = (props: OwnProps) => {
                             {props.title}
                         </Typography>
                         <TextField label={props.label} variant="filled" onChange={onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
-                        <Button variant="contained" onClick={props.onSubmit}>Enter</Button>
+                        <Button variant="contained" onClick={props.onSubmit} disabled={!props.value}>Enter</Button>
                     </Stack>
                 </Box>
             </Modal>
