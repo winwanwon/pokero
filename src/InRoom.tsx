@@ -3,13 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Alert, AppBar, Box, Container, LinearProgress, Stack, Toolbar, Typography } from "@mui/material";
+import { Alert, AppBar, Box, Container, IconButton, LinearProgress, Snackbar, Stack, Toolbar, Typography } from "@mui/material";
 import TagIcon from '@mui/icons-material/Tag';
+import ShareIcon from '@mui/icons-material/Share';
 
 import { firebaseConfig } from "./config";
 import { AppState } from "./enum";
 import { User, UserDatabase } from "./types";
-import PromptModal from "./components/PromptModal";
+import PopUpModal from "./components/PopUpModal";
 import OptionButtonGroup from "./components/OptionButtonGroup";
 import CommandButtons from "./components/CommandButtons";
 import Summary from "./components/Summary";
@@ -25,6 +26,7 @@ const InRoom: React.FC = () => {
     const roomName = params.roomName?.toLowerCase() || "";
     const [name, setName] = useState(window.localStorage.getItem("name") || "");
     const [modalOpen, setModalOpen] = useState(true);
+    const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [appState, setAppState] = useState<AppState>(AppState.Init);
     const [selectedOption, setSelectedOption] = useState<number>(-1);
     const [users, setUsers] = useState<UserDatabase>({});
@@ -91,7 +93,6 @@ const InRoom: React.FC = () => {
         });
     }
 
-    const handleClose = () => { };
     const onSubmitName = () => {
         if (name) {
             window.localStorage.setItem("name", name);
@@ -114,12 +115,15 @@ const InRoom: React.FC = () => {
         });
     });
 
-    const summary = !modalOpen &&
-        <Summary
-            appState={appState}
-            uuid={uuid}
-            users={users}
-        />;
+    const copyUrl = () => {
+        const el = document.createElement("input");
+        el.value = window.location.href;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+        setSnackBarOpen(true)
+    }
 
     const userList: User[] = Object.keys(users).map(key => users[key]);
     const selectedUser = userList.filter(x => x.selectedOption > -1);
@@ -167,7 +171,7 @@ const InRoom: React.FC = () => {
                 width="100%"
                 height="100%"
             >
-                {summary}
+                {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} />}
             </Box>
             <Box
                 position="absolute"
@@ -204,23 +208,37 @@ const InRoom: React.FC = () => {
                                 <img src="/pokero-logo-white.png" alt="POKERO" height="34" />
                             </a>
                             <Box display="flex" alignItems="center">
-                                <TagIcon />
-                                <Typography variant="h6">
-                                    {roomName}
-                                </Typography>
+                                <Box display="flex" alignItems="center">
+                                    <TagIcon />
+                                    <Typography variant="h6">
+                                        {roomName}
+                                    </Typography>
+                                </Box>
+                                <Box mx={2}>
+                                    <IconButton sx={{ color: 'white' }} onClick={copyUrl}>
+                                        <ShareIcon />
+                                    </IconButton>
+                                </Box>
                             </Box>
                         </Box>
                     </Toolbar>
                 </Container>
             </AppBar>
             <Container sx={{ height: '100%' }}>
-                <PromptModal
-                    name="name"
+                <PopUpModal
+                    title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
+                    label="Name"
                     open={modalOpen}
                     value={name}
                     setValue={setName}
-                    onClose={handleClose}
                     onSubmit={onSubmitName}
+                />
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    open={snackBarOpen}
+                    autoHideDuration={2000}
+                    onClose={() => setSnackBarOpen(false)}
+                    message="Invitation URL copied!"
                 />
                 {!modalOpen && content}
             </Container>

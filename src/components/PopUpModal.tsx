@@ -4,12 +4,13 @@ import { Container } from "@mui/material";
 import { isValidUserName } from "../utils";
 
 interface OwnProps {
-    name: string;
+    title: string;
+    label: string;
     open: boolean;
     value: string;
-    setValue: (s: string) => void;
-    onClose: () => void;
     onSubmit: () => void;
+    onClose?: () => void;
+    setValue?: (s: string) => void;
 }
 
 const style = {
@@ -25,9 +26,9 @@ const style = {
     p: 4,
 };
 
-const PromptModal = (props: OwnProps) => {
+const PopUpModal = (props: OwnProps) => {
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        isValidUserName(e.target.value) && props.setValue(e.target.value);
+        props.setValue && isValidUserName(e.target.value) && props.setValue(e.target.value);
     }
 
     const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -47,9 +48,9 @@ const PromptModal = (props: OwnProps) => {
                 <Box sx={style}>
                     <Stack spacing={2} justifyContent={'center'}>
                         <Typography variant="h5" gutterBottom component="div">
-                            {props.value ? `Welcome! ${props.value}` : "Enter your name to proceed"}
+                            {props.title}
                         </Typography>
-                        <TextField label="Name" variant="filled" onChange={onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
+                        <TextField label={props.label} variant="filled" onChange={onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
                         <Button variant="contained" onClick={props.onSubmit}>Enter</Button>
                     </Stack>
                 </Box>
@@ -58,4 +59,4 @@ const PromptModal = (props: OwnProps) => {
     );
 }
 
-export default PromptModal;
+export default PopUpModal;
