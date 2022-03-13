@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { initializeApp } from "firebase/app";
+import { FirebaseApp } from "firebase/app";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
 import { Alert, Box, Container, LinearProgress, Snackbar, Stack, Typography } from "@mui/material";
 
-import { firebaseConfig } from "./config";
 import { AppState } from "./enum";
 import { User, UserDatabase } from "./types";
 import { getAverageFromResult, getModeFromResult, isValidRoomName } from "./utils";
@@ -16,8 +16,13 @@ import CommandButtons from "./components/CommandButtons";
 import Summary from "./components/Summary";
 import { NavBar } from "./components/NavBar";
 
-const InRoom: React.FC = () => {
-    const app = initializeApp(firebaseConfig);
+interface Props {
+    firebaseApp: FirebaseApp;
+}
+
+const InRoom: React.FC<Props> = (props: Props) => {
+    const app = props.firebaseApp;
+    const analytics = getAnalytics();    
     const database = getDatabase(app);
     const uuid = window.sessionStorage.getItem("uuid") || uuidv4();
     window.sessionStorage.setItem("uuid", uuid);
@@ -208,7 +213,10 @@ const InRoom: React.FC = () => {
             <NavBar
                 isInRoom={true}
                 roomName={roomName}
-                onUrlCopied={() => setSnackBarOpen(true)}
+                onUrlCopied={() => {
+                    logEvent(analytics, 'share');
+                    setSnackBarOpen(true);
+                }}
             />
             <Box
                 sx={{

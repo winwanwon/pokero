@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { firebaseConfig } from "./config";
+
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import InRoom from './InRoom';
@@ -28,13 +32,16 @@ const theme = createTheme({
   },
 });
 
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/:roomName" element={<InRoom />} />
+          <Route path="/:roomName" element={<InRoom firebaseApp={app} />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
