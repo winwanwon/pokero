@@ -9,6 +9,10 @@ import './index.css';
 
 const theme = createTheme({
   palette: {
+    background: {
+      default: '#FFFFFF',
+      paper: '#F6F9FC',
+    },
     primary: {
       light: '#69b7ff',
       main: '#3299ff',

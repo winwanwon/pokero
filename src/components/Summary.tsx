@@ -35,7 +35,6 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
             <Box
                 width={150}
                 height={200}
-                className="card"
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -43,6 +42,13 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                 alignSelf="center"
                 justifySelf="center"
                 gridColumn="span 1"
+                position="relative"
+                borderRadius={4}
+                boxShadow={4}
+                key={key}
+                sx={{
+                    backgroundColor: 'background.paper',
+                }}
             >
                 <Box
                     width={84}

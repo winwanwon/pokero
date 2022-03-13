@@ -3,9 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Alert, AppBar, Box, Container, IconButton, LinearProgress, Snackbar, Stack, Toolbar, Typography } from "@mui/material";
-import TagIcon from '@mui/icons-material/Tag';
-import ShareIcon from '@mui/icons-material/Share';
+import { Alert, Box, Container, LinearProgress, Snackbar, Stack, Typography } from "@mui/material";
 
 import { firebaseConfig } from "./config";
 import { AppState } from "./enum";
@@ -16,6 +14,7 @@ import PopUpModal from "./components/PopUpModal";
 import OptionButtonGroup from "./components/OptionButtonGroup";
 import CommandButtons from "./components/CommandButtons";
 import Summary from "./components/Summary";
+import { NavBar } from "./components/NavBar";
 
 const InRoom: React.FC = () => {
     const app = initializeApp(firebaseConfig);
@@ -131,16 +130,6 @@ const InRoom: React.FC = () => {
         setSudoMode(event.altKey);
     });
 
-    const copyUrl = () => {
-        const el = document.createElement("input");
-        el.value = window.location.href;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand("copy");
-        document.body.removeChild(el);
-        setSnackBarOpen(true)
-    }
-
     const userList: User[] = Object.keys(users).map(key => users[key]);
     const selectedUser = userList.filter(x => x.selectedOption > -1);
     const averageEsimation = getAverageFromResult(selectedUser);
@@ -216,48 +205,36 @@ const InRoom: React.FC = () => {
 
     return (
         <>
-            <AppBar position="absolute">
-                <Container>
-                    <Toolbar disableGutters>
-                        <Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
-                            <a href="/">
-                                <img src="/pokero-logo-white.png" alt="POKERO" height="34" />
-                            </a>
-                            <Box display="flex" alignItems="center">
-                                <Box display="flex" alignItems="center">
-                                    <TagIcon />
-                                    <Typography variant="h6">
-                                        {roomName}
-                                    </Typography>
-                                </Box>
-                                <Box mx={2}>
-                                    <IconButton sx={{ color: 'white' }} onClick={copyUrl}>
-                                        <ShareIcon />
-                                    </IconButton>
-                                </Box>
-                            </Box>
-                        </Box>
-                    </Toolbar>
+            <NavBar
+                isInRoom={true}
+                roomName={roomName}
+                onUrlCopied={() => setSnackBarOpen(true)}
+            />
+            <Box
+                sx={{
+                    backgroundColor: 'background.default',
+                    height: '100%',
+                }}
+            >
+                <Container sx={{ height: '100%' }}>
+                    <PopUpModal
+                        title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
+                        label="Name"
+                        open={modalOpen}
+                        value={name}
+                        setValue={setName}
+                        onSubmit={onSubmitName}
+                    />
+                    <Snackbar
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        open={snackBarOpen}
+                        autoHideDuration={2000}
+                        onClose={() => setSnackBarOpen(false)}
+                        message="Invitation URL copied!"
+                    />
+                    {!modalOpen && content}
                 </Container>
-            </AppBar>
-            <Container sx={{ height: '100%' }}>
-                <PopUpModal
-                    title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
-                    label="Name"
-                    open={modalOpen}
-                    value={name}
-                    setValue={setName}
-                    onSubmit={onSubmitName}
-                />
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    open={snackBarOpen}
-                    autoHideDuration={2000}
-                    onClose={() => setSnackBarOpen(false)}
-                    message="Invitation URL copied!"
-                />
-                {!modalOpen && content}
-            </Container>
+            </Box>
         </>
     );
 }
