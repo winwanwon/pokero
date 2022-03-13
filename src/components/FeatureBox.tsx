@@ -9,7 +9,7 @@ interface Props {
 }
 
 const FeatureBox: React.FC<Props> = (props: Props) => (
-    <Grid item xs={4} px={4} py={6}>
+    <Grid item md={4} px={4} py={6}>
         <Box
             p={1}
             my={2}

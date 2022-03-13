@@ -45,7 +45,7 @@ const NavBar: React.FC<Props> = (props) => {
                 <Toolbar disableGutters>
                     <Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
                         <a href="/">
-                            <img src="/pokero-logo-v2.png" alt="POKERO" height="34" />
+                            <img src="/pokero-logo-v2.png" alt="POKERO" height="32" />
                         </a>
                     </Box>
                     {isInRoom && roomDetails}

@@ -8,6 +8,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { isValidRoomName } from "./utils";
 import { FeatureBox } from "./components/FeatureBox";
 import { NavBar } from "./components/NavBar";
+import { ReactComponent as PokeroIllus } from "./svg/pokero-illus.svg"
 
 const App: React.FC = () => {
   let navigate = useNavigate();
@@ -33,7 +34,10 @@ const App: React.FC = () => {
           <Box
             width="100%"
             height="100%"
-            py={14}
+            display="flex"
+            alignItems="center"
+            justifyContent="space-around"
+            py={10}
           >
             <Stack justifyContent="center" textAlign="left">
               <Box marginBottom={6}>
@@ -75,6 +79,9 @@ const App: React.FC = () => {
                 </Stack>
               </Box>
             </Stack>
+            <Box sx={{ display: { xs: 'none', md: 'initial' } }}>
+              <PokeroIllus height={440} />
+            </Box>
           </Box>
         </Container>
       </Box >
