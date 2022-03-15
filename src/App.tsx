@@ -99,8 +99,8 @@ const App: React.FC = () => {
               icon={<EqualizerIcon sx={{ color: 'background.default' }} fontSize="large" />}
             />
             <FeatureBox
-              title="Streamer mode"
-              content="Sharing your screen? Enable streamer mode to hide your selected option to avoid estimation bias"
+              title="Facilitator mode"
+              content="Sharing your screen? Enable facilitator mode to hide your selected option to avoid estimation bias"
               chipContent="WIP"
               icon={<VisibilityOffIcon sx={{ color: 'background.default' }} fontSize="large" />}
             />

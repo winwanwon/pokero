@@ -22,7 +22,7 @@ interface Props {
 
 const InRoom: React.FC<Props> = (props: Props) => {
     const app = props.firebaseApp;
-    const analytics = getAnalytics();    
+    const analytics = getAnalytics();
     const database = getDatabase(app);
     const uuid = window.sessionStorage.getItem("uuid") || uuidv4();
     window.sessionStorage.setItem("uuid", uuid);
@@ -50,15 +50,18 @@ const InRoom: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         onValue(ref(database, usersDbPath), (snapshot) => {
             const dbSnap = snapshot.val();
-            snapshot.size && setUsers(dbSnap);
-
-            !dbSnap[uuid] && setModalOpen(true);
+            if (snapshot.size) {
+                setUsers(dbSnap);
+                !dbSnap[uuid] && setModalOpen(true);
+            }
         });
 
         onValue(ref(database, stateDbPath), (snapshot) => {
             const dbSnap = snapshot.val();
-            setAppState(dbSnap.currentState);
-            dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
+            if (dbSnap) {
+                setAppState(dbSnap.currentState);
+                dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
+            }
         });
 
         get(ref(database, stateDbPath)).then((snapshot) => {
@@ -127,13 +130,15 @@ const InRoom: React.FC<Props> = (props: Props) => {
         });
     });
 
-    // Enable SUDO mode on alt button down
-    document.body.addEventListener('keydown', function (event) {
-        setSudoMode(event.altKey);
-    });
-    document.body.addEventListener('keyup', function (event) {
-        setSudoMode(event.altKey);
-    });
+    React.useEffect(() => {
+        // Enable SUDO mode on alt button down
+        document.body.addEventListener('keydown', (event) => {
+            setSudoMode(event.altKey);
+        });
+        document.body.addEventListener('keyup', (event) => {
+            setSudoMode(event.altKey);
+        });
+    }, []);
 
     const userList: User[] = Object.keys(users).map(key => users[key]);
     const selectedUser = userList.filter(x => x.selectedOption > -1);
