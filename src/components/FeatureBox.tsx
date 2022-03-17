@@ -5,6 +5,7 @@ interface Props {
     title: string;
     content: string;
     chipContent?: string;
+    chipVariant?: 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
     icon: JSX.Element;
 }
 
@@ -27,7 +28,7 @@ const FeatureBox: React.FC<Props> = (props: Props) => (
             <Typography mb={1} variant="h5">
                 {props.title}
             </Typography>
-            {props.chipContent && <Chip label={props.chipContent} color="info" size="small" />}
+            {props.chipContent && <Chip label={props.chipContent} color={props.chipVariant || 'info'} size="small" />}
         </Stack>
         <Typography variant="body1">
             {props.content}

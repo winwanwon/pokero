@@ -200,9 +200,9 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     spacing={2}
                     minWidth={380}
                 >
-                    {appState === AppState.Init && selectedUserDisplay}
                     {appState === AppState.Revealed && summaryDisplay}
                     {appState === AppState.Init && optionButtons}
+                    {appState === AppState.Init && selectedUserDisplay}
                     <CommandButtons
                         appState={appState}
                         onAppStateUpdate={onAppStateUpdate}

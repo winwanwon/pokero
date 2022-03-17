@@ -101,7 +101,8 @@ const App: React.FC = () => {
             <FeatureBox
               title="Facilitator mode"
               content="Sharing your screen? Enable facilitator mode to hide your selected option to avoid estimation bias"
-              chipContent="WIP"
+              chipContent="New"
+              chipVariant="secondary"
               icon={<VisibilityOffIcon sx={{ color: 'background.default' }} fontSize="large" />}
             />
           </Grid>

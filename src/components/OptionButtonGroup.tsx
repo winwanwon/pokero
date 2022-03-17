@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { Button, ButtonGroup } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, ButtonGroup, Tooltip, Zoom } from '@mui/material';
 import { AppState } from '../enum';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 interface OwnProps {
     appState: AppState;
     selectedOption: number;
@@ -12,6 +15,7 @@ interface OwnProps {
 const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     const { selectedOption, setSelectedOption, appState, onOptionSelect } = props;
     const options = [0, 1, 2, 3, 5, 8, 13];
+    const [visibility, setVisibility] = useState(true);
 
     React.useEffect(() => {
         document.body.addEventListener('keydown', (event) => {
@@ -37,25 +41,48 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         onOptionSelect(opt);
     };
 
-    const renderOptions = options.map((option) => {
+    const renderOptions = options.map((option, index) => {
         const onClick = () => {
             selectOption(option);
         };
         return (
-            <Button
-                key={option}
-                variant={option === selectedOption ? 'contained' : 'outlined'}
-                onClick={onClick}
+            <Tooltip
+                title={index + 1}
+                placement="top"
+                open={!visibility}
+                TransitionComponent={Zoom}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
             >
-                {option}
-            </Button>
+                <Button
+                    key={option}
+                    variant={(option === selectedOption) && visibility ? 'contained' : 'outlined'}
+                    onClick={onClick}
+                    disabled={!visibility}
+                >
+                    {option}
+                </Button>
+            </Tooltip>
         );
     });
 
+    const onToggleVisibility = () => setVisibility(!visibility);
+
     return (
-        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
-            {renderOptions}
-        </ButtonGroup>
+        <>
+            <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
+                {renderOptions}
+                <Tooltip title={`${visibility ? 'Enable' : 'Disable'} Facilitator Mode`} placement="right">
+                    <Button
+                        size="small"
+                        onClick={onToggleVisibility}
+                    >
+                        {visibility ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </Button>
+                </Tooltip>
+            </ButtonGroup>
+        </>
     );
 }
 
