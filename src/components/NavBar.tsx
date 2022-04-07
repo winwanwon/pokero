@@ -26,8 +26,8 @@ const NavBar: React.FC<Props> = (props) => {
     const roomDetails = (
         <Box display="flex" alignItems="center">
             <Box display="flex" alignItems="center">
-                <TagIcon color="primary"/>
-                <Typography variant="h6" color="primary">
+                <TagIcon color="primary" />
+                <Typography variant="h6" color="primary" sx={{ whiteSpace: 'nowrap' }}>
                     {roomName}
                 </Typography>
             </Box>
