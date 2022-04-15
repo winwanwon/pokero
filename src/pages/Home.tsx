@@ -5,10 +5,11 @@ import TagIcon from '@mui/icons-material/Tag';
 import PeopleIcon from '@mui/icons-material/People';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { isValidRoomName } from "./utils";
-import { FeatureBox } from "./components/FeatureBox";
-import { NavBar } from "./components/NavBar";
-import { ReactComponent as PokeroIllus } from "./svg/pokero-illus.svg"
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { isValidRoomName } from "../utils";
+import { FeatureBox } from "../components/FeatureBox";
+import { NavBar } from "../components/NavBar";
+import { ReactComponent as PokeroIllus } from "../svg/pokero-illus.svg"
 
 const App: React.FC = () => {
   let navigate = useNavigate();

@@ -7,8 +7,8 @@ import { getAnalytics } from "firebase/analytics";
 import { firebaseConfig } from "./config";
 
 import reportWebVitals from './reportWebVitals';
-import App from './App';
-import InRoom from './InRoom';
+import App from './pages/Home';
+import InRoom from './pages/Room';
 import './index.css';
 
 const theme = createTheme({

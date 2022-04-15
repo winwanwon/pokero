@@ -4,17 +4,18 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Alert, Box, Container, LinearProgress, Snackbar, Stack, Typography } from "@mui/material";
+import { Alert, Box, Container, Snackbar, Stack } from "@mui/material";
 
-import { AppState } from "./enum";
-import { User, UserDatabase } from "./types";
-import { getAverageFromResult, getModeFromResult, isValidRoomName } from "./utils";
+import { AppState } from "../enum";
+import { User, UserDatabase } from "../types";
+import { getAverageFromResult, getModeFromResult, isValidRoomName } from "../utils";
 
-import PopUpModal from "./components/PopUpModal";
-import OptionButtonGroup from "./components/OptionButtonGroup";
-import CommandButtons from "./components/CommandButtons";
-import Summary from "./components/Summary";
-import { NavBar } from "./components/NavBar";
+import PopUpModal from "../components/PopUpModal";
+import OptionButtonGroup from "../components/OptionButtonGroup";
+import CommandButtons from "../components/CommandButtons";
+import Summary from "../components/Summary";
+import { NavBar } from "../components/NavBar";
+import Result from "../components/Result";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -151,23 +152,6 @@ const InRoom: React.FC<Props> = (props: Props) => {
         </Alert>
     );
 
-    const summaryDisplay = (
-        <Box border={1} borderColor="secondary.main" borderRadius={2} p={2}>
-            <Box mb={2}>
-                <Typography variant="subtitle2" mb={1}>
-                    Average: {!!averageEsimation ? averageEsimation.toFixed(1) : "-"}
-                </Typography>
-                <LinearProgress variant="determinate" color="secondary" value={(!!averageEsimation ? averageEsimation / 13 : 0) * 100} />
-            </Box>
-            <Box width="100%">
-                <Typography variant="subtitle2" mb={1}>
-                    Mode: {modeEstimation >= 0 ? modeEstimation : "-"}
-                </Typography>
-                <LinearProgress variant="determinate" color="secondary" value={(modeEstimation >= 0 ? modeEstimation / 13 : 0) * 100} />
-            </Box>
-        </Box>
-    );
-
     const optionButtons = (
         <OptionButtonGroup
             selectedOption={selectedOption}
@@ -200,7 +184,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     spacing={2}
                     minWidth={380}
                 >
-                    {appState === AppState.Revealed && summaryDisplay}
+                    {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
                     {appState === AppState.Init && optionButtons}
                     {appState === AppState.Init && selectedUserDisplay}
                     <CommandButtons
