@@ -5,7 +5,6 @@ import TagIcon from '@mui/icons-material/Tag';
 import PeopleIcon from '@mui/icons-material/People';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import { isValidRoomName } from "../utils";
 import { FeatureBox } from "../components/FeatureBox";
 import { NavBar } from "../components/NavBar";
