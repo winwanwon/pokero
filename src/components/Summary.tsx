@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import PersonIcon from '@mui/icons-material/Person';
 import ClearIcon from '@mui/icons-material/Clear';
 
 import { UserDatabase } from '../types';
@@ -33,8 +32,8 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
 
         return (
             <Box
-                width={150}
-                height={200}
+                width={140}
+                height={170}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -43,28 +42,28 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                 justifySelf="center"
                 gridColumn="span 1"
                 position="relative"
-                borderRadius={4}
-                boxShadow={4}
+                borderRadius={3}
+                boxShadow={3}
                 key={key}
                 sx={{
                     backgroundColor: 'background.paper',
                 }}
             >
                 <Box
-                    width={84}
-                    height={84}
+                    width={72}
+                    height={72}
                     border={4}
                     borderColor={confirmedValue ? 'success.light' : 'primary.main'}
-                    borderRadius={42}
+                    borderRadius={36}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                 >
-                    {isInit && (selected ? <DoneIcon color="success" sx={{ fontSize: 60 }} /> : <QuestionMarkIcon color="primary" sx={{ fontSize: 60 }} />)}
+                    {isInit && (selected ? <DoneIcon color="success" sx={{ fontSize: 52 }} /> : <QuestionMarkIcon color="primary" sx={{ fontSize: 52 }} />)}
                     <Typography
                         color={confirmedValue ? 'success.main' : 'primary.main'}
                         fontWeight={500}
-                        fontSize={48}
+                        fontSize={44}
                         textAlign="center"
                     >
                         {isRevealed && (selected ? users[key].selectedOption : "-")}
@@ -76,8 +75,7 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                     justifyContent="center"
                     marginTop={2}
                 >
-                    {key === uuid && <PersonIcon color="primary" />}
-                    <Typography variant="h6" textAlign="center" color={key === uuid ? 'primary' : 'text'}>
+                    <Typography fontSize={18} fontWeight={500} textAlign="center" color={key === uuid ? 'primary' : 'text'}>
                         {users[key].name}
                     </Typography>
                 </Box>
