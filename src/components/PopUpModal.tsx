@@ -26,7 +26,7 @@ const style = {
     p: 4,
 };
 
-const PopUpModal = (props: OwnProps) => {
+const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         props.setValue && isValidUserName(e.target.value) && props.setValue(e.target.value);
     }

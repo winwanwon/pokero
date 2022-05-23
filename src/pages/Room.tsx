@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Alert, Box, Container, Snackbar, Stack } from "@mui/material";
+import { Alert, Box, Container, Snackbar, Stack, Typography } from "@mui/material";
 
 import { AppState } from "../enum";
 import { User, UserDatabase } from "../types";
@@ -16,6 +16,7 @@ import CommandButtons from "../components/CommandButtons";
 import Summary from "../components/Summary";
 import { NavBar } from "../components/NavBar";
 import Result from "../components/Result";
+import RoomDetail from "../components/RoomDetail";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -192,6 +193,9 @@ const InRoom: React.FC<Props> = (props: Props) => {
                         onAppStateUpdate={onAppStateUpdate}
                         resetAppState={resetAppState}
                     />
+                    <Typography variant="caption" align="center">
+                        Tips: hold [Alt] to enable sudo mode
+                    </Typography>
                 </Stack>
             </Box>
         </>
@@ -200,12 +204,15 @@ const InRoom: React.FC<Props> = (props: Props) => {
     return (
         <>
             <NavBar
-                isInRoom={true}
-                roomName={roomName}
-                onUrlCopied={() => {
-                    logEvent(analytics, 'share');
-                    setSnackBarOpen(true);
-                }}
+                render={
+                    <RoomDetail
+                        roomName={roomName}
+                        onUrlCopied={() => {
+                            logEvent(analytics, 'share');
+                            setSnackBarOpen(true);
+                        }}
+                    />
+                }
             />
             <Box
                 sx={{

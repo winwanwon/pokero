@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react';
 import { Button, ButtonGroup, Tooltip, Zoom } from '@mui/material';
-import { AppState } from '../enum';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { keyMap } from '../constants/keyMap';
+import { AppState } from '../enum';
 
 interface OwnProps {
     appState: AppState;
@@ -20,15 +21,6 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     React.useEffect(() => {
         document.body.addEventListener('keydown', (event) => {
             if (event.repeat) return;
-            const keyMap: { [key: string]: number } = {
-                '1': 0,
-                '2': 1,
-                '3': 2,
-                '4': 3,
-                '5': 4,
-                '6': 5,
-                '7': 6,
-            };
             if (event.key in keyMap) {
                 selectOption(options[keyMap[event.key]]);
             }
