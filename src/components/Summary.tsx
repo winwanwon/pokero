@@ -32,8 +32,8 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
 
         return (
             <Box
-                width={140}
-                height={170}
+                width={135}
+                height={165}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"

@@ -194,7 +194,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                         resetAppState={resetAppState}
                     />
                     <Typography variant="caption" align="center">
-                        Tips: hold [Alt] to enable sudo mode
+                        Tips: hold <i>Alt</i> to enable sudo mode
                     </Typography>
                 </Stack>
             </Box>

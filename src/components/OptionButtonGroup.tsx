@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button, ButtonGroup, Tooltip, Zoom } from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { keyMap } from '../constants/keyMap';
+import { keyMap, reverseKeyMap } from '../constants/keyMap';
 import { AppState } from '../enum';
 
 interface OwnProps {
@@ -39,7 +39,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         };
         return (
             <Tooltip
-                title={index + 1}
+                title={reverseKeyMap[index]}
                 placement="top"
                 open={!visibility}
                 TransitionComponent={Zoom}
