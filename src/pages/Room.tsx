@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Alert, Box, Container, Snackbar, Stack, Typography } from "@mui/material";
+import { Box, Container, Snackbar, Stack } from "@mui/material";
 
 import { AppState } from "../enum";
 import { User, UserDatabase } from "../types";
