@@ -12,7 +12,7 @@ import { getAverageFromResult, getModeFromResult, isValidRoomName } from "../uti
 
 import PopUpModal from "../components/PopUpModal";
 import OptionButtonGroup from "../components/OptionButtonGroup";
-import CommandButtons from "../components/CommandButtons";
+import CommandButton from "../components/CommandButton";
 import Summary from "../components/Summary";
 import { NavBar } from "../components/NavBar";
 import Result from "../components/Result";
@@ -147,12 +147,6 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const averageEsimation = getAverageFromResult(selectedUser);
     const modeEstimation = getModeFromResult(selectedUser);
 
-    const selectedUserDisplay = (
-        <Alert severity={selectedUser.length === userList.length ? 'success' : 'info'}>
-            {`${selectedUser.length}/${userList.length} already selected`}
-        </Alert>
-    );
-
     const optionButtons = (
         <OptionButtonGroup
             selectedOption={selectedOption}
@@ -161,6 +155,29 @@ const InRoom: React.FC<Props> = (props: Props) => {
             onOptionSelect={onOptionSelect}
         />
     );
+
+    const getButtonContent = () => {
+        switch (appState) {
+            case AppState.Init:
+                return `Reveal all (${selectedUser.length}/${userList.length} selected)`;
+            case AppState.Revealed:
+            default:
+                return "Reset";
+        }
+    };
+    
+    const getButtonColor = () => {
+        return appState === AppState.Init ? 'primary' : 'secondary'
+    };
+
+    const onButtonClick = () => {
+        if (appState === AppState.Init) {
+            onAppStateUpdate(AppState.Revealed);
+        } else {
+            onAppStateUpdate(AppState.Init);
+            resetAppState();
+        }
+    };
 
     const content = (
         <>
@@ -187,15 +204,13 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 >
                     {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
                     {appState === AppState.Init && optionButtons}
-                    {appState === AppState.Init && selectedUserDisplay}
-                    <CommandButtons
-                        appState={appState}
-                        onAppStateUpdate={onAppStateUpdate}
+                    {/* {appState === AppState.Init && selectedUserDisplay} */}
+                    <CommandButton
+                        content={getButtonContent()}
+                        color={getButtonColor()}
+                        onClick={onButtonClick}
                         resetAppState={resetAppState}
                     />
-                    <Typography variant="caption" align="center">
-                        Tips: hold <i>Alt</i> to enable sudo mode
-                    </Typography>
                 </Stack>
             </Box>
         </>
