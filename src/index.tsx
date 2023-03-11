@@ -9,6 +9,7 @@ import { firebaseConfig } from "./config";
 import reportWebVitals from './reportWebVitals';
 import App from './pages/Home';
 import InRoom from './pages/Room';
+import Control from './pages/Control';
 import './index.css';
 
 const theme = createTheme({
@@ -42,6 +43,7 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/:roomName" element={<InRoom firebaseApp={app} />} />
+          <Route path="/c/:roomName" element={<Control firebaseApp={app} />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

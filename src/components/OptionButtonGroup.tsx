@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, ButtonGroup, Tooltip, Zoom } from '@mui/material';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+
 import { keyMap, reverseKeyMap } from '../constants/keyMap';
 import { AppState } from '../enum';
 
@@ -11,12 +12,15 @@ interface OwnProps {
     selectedOption: number;
     setSelectedOption: (option: number) => void;
     onOptionSelect: (option: number) => void;
+    visibility?: boolean;
+    setVisibility?: React.Dispatch<React.SetStateAction<boolean>>;
+    enableExtraFn?: boolean;
+    handleExtraFn?: () => void;
 }
 
 const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
-    const { selectedOption, setSelectedOption, appState, onOptionSelect } = props;
+    const { selectedOption, setSelectedOption, appState, onOptionSelect, visibility, setVisibility, enableExtraFn, handleExtraFn } = props;
     const options = [0, 1, 2, 3, 5, 8, 13];
-    const [visibility, setVisibility] = useState(true);
 
     React.useEffect(() => {
         document.body.addEventListener('keydown', (event) => {
@@ -59,21 +63,40 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         );
     });
 
-    const onToggleVisibility = () => setVisibility(!visibility);
+    const onExtraFnClick = () => {
+        setVisibility && setVisibility(false);
+        handleExtraFn && handleExtraFn();
+    };
 
-    return (
+    const renderExtraFn = () => {
+        return (
+            <Tooltip title="Open options in new tab" placement="right">
+                <Button
+                    size="small"
+                    onClick={onExtraFnClick}
+                >
+                    <OpenInNewIcon />
+                </Button>
+            </Tooltip>
+        );
+    }
+
+    const onShowOptions = () => {
+        setVisibility && setVisibility(true);
+    };
+
+    return visibility ? (
         <>
             <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
                 {renderOptions}
-                <Tooltip title={`${visibility ? 'Enable' : 'Disable'} Facilitator Mode`} placement="right">
-                    <Button
-                        size="small"
-                        onClick={onToggleVisibility}
-                    >
-                        {visibility ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                    </Button>
-                </Tooltip>
+                {enableExtraFn && renderExtraFn()}
             </ButtonGroup>
+        </>
+    ) : (
+        <>
+            <Button variant="text" onClick={onShowOptions}>
+                <ExpandLessIcon /> Show options
+            </Button>
         </>
     );
 }

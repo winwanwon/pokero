@@ -28,6 +28,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const database = getDatabase(app);
     const uuid = window.sessionStorage.getItem("uuid") || uuidv4();
     window.sessionStorage.setItem("uuid", uuid);
+    window.localStorage.setItem("uuid", uuid);
 
     const params = useParams();
     const roomName = params.roomName?.toLowerCase() || "";
@@ -38,6 +39,8 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const [selectedOption, setSelectedOption] = useState<number>(-1);
     const [users, setUsers] = useState<UserDatabase>({});
     const [sudoMode, setSudoMode] = useState<boolean>(false);
+    const [visibility, setVisibility] = useState(true);
+    
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
@@ -66,6 +69,11 @@ const InRoom: React.FC<Props> = (props: Props) => {
             }
         });
 
+        onValue(ref(database, thisUserDbPath), (snapshot) => {
+            const dbSnap = snapshot.val();
+            setSelectedOption(dbSnap.selectedOption);
+        });
+
         get(ref(database, stateDbPath)).then((snapshot) => {
             if (!snapshot.exists()) {
                 set(ref(database, stateDbPath), {
@@ -77,7 +85,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
         }).catch((error) => {
             console.error(error);
         });
-    }, [database, stateDbPath, usersDbPath, uuid]);
+    }, [database, stateDbPath, thisUserDbPath, usersDbPath, uuid]);
 
     const onOptionSelect = (option: number) => {
         update(ref(database, thisUserDbPath), {
@@ -147,12 +155,21 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const averageEsimation = getAverageFromResult(selectedUser);
     const modeEstimation = getModeFromResult(selectedUser);
 
+
+    const handleExtraFn = () => {
+        window.open(`${window.location.origin}/c/${roomName}`, '_blank', 'height=200,width=480');
+    };
+
     const optionButtons = (
         <OptionButtonGroup
             selectedOption={selectedOption}
             setSelectedOption={setSelectedOption}
             appState={appState}
             onOptionSelect={onOptionSelect}
+            visibility={visibility}
+            setVisibility={setVisibility}
+            enableExtraFn={true}
+            handleExtraFn={handleExtraFn}
         />
     );
 
@@ -199,8 +216,8 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 justifyContent="center"
             >
                 <Stack
-                    spacing={2}
-                    minWidth={380}
+                    spacing={1}
+                    minWidth={420}
                 >
                     {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
                     {appState === AppState.Init && optionButtons}
