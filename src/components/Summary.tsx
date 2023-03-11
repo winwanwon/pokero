@@ -32,8 +32,8 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
 
         return (
             <Box
-                width={135}
-                height={165}
+                width={115}
+                height={140}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -47,23 +47,24 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                 key={key}
                 sx={{
                     backgroundColor: 'background.paper',
+                    boxShadow: 3,
                 }}
             >
                 <Box
-                    width={72}
-                    height={72}
-                    border={4}
+                    width={60}
+                    height={60}
+                    border={3}
                     borderColor={confirmedValue ? 'success.light' : 'primary.main'}
-                    borderRadius={36}
+                    borderRadius={30}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                 >
-                    {isInit && (selected ? <DoneIcon color="success" sx={{ fontSize: 52 }} /> : <QuestionMarkIcon color="primary" sx={{ fontSize: 52 }} />)}
+                    {isInit && (selected ? <DoneIcon color="success" sx={{ fontSize: 44 }} /> : <QuestionMarkIcon color="primary" sx={{ fontSize: 44 }} />)}
                     <Typography
                         color={confirmedValue ? 'success.main' : 'primary.main'}
                         fontWeight={500}
-                        fontSize={44}
+                        fontSize={36}
                         textAlign="center"
                     >
                         {isRevealed && (selected ? users[key].selectedOption : "-")}
@@ -75,7 +76,12 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                     justifyContent="center"
                     marginTop={2}
                 >
-                    <Typography fontSize={18} fontWeight={500} textAlign="center" color={key === uuid ? 'primary' : 'text'}>
+                    <Typography
+                        fontSize={16}
+                        fontWeight={key === uuid ? 600 : 400}
+                        textAlign="center"
+                        color="text"
+                    >
                         {users[key].name}
                     </Typography>
                 </Box>

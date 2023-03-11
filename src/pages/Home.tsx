@@ -73,7 +73,7 @@ const App: React.FC = () => {
                     onKeyPress={onKeyPress}
                     value={roomName}
                   />
-                  <Button variant="contained" disabled={!roomName} onClick={onJoinButtonClick}>
+                  <Button variant="contained" color="primary" disabled={!roomName} onClick={onJoinButtonClick}>
                     Join {roomName && `#${roomName}`}
                   </Button>
                 </Stack>
@@ -101,7 +101,6 @@ const App: React.FC = () => {
             <FeatureBox
               title="Facilitator mode"
               content="Sharing your screen? Enable facilitator mode to hide your selected option to avoid estimation bias"
-              chipContent="New"
               chipVariant="secondary"
               icon={<VisibilityOffIcon sx={{ color: 'background.default' }} fontSize="large" />}
             />

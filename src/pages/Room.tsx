@@ -186,13 +186,13 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 alignItems="center"
                 justifyContent="center"
                 width="100%"
-                height="100%"
+                height="95%"   
             >
                 {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />}
             </Box>
             <Box
                 position="absolute"
-                bottom={30}
+                bottom={20}
                 left={0}
                 right={0}
                 display="flex"

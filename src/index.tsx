@@ -14,20 +14,20 @@ import './index.css';
 const theme = createTheme({
   palette: {
     background: {
-      default: '#FFFFFF',
-      paper: '#F6F9FC',
+      default: '#F9F9F9',
+      paper: '#FFFFFF',
     },
     primary: {
-      light: '#69b7ff',
-      main: '#3299ff',
-      dark: '#2e78dd',
-      contrastText: '#FEFEFE',
+      light: '#1B98E0',
+      main: '#1B98E0',
+      dark: '#1B98E0',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      light: '#e6c0fe',
-      main: '#c369ff',
-      dark: '#a31ff4',
-      contrastText: '#FEFEFE',
+      light: '#1B98E0',
+      main: '#1B98E0',
+      dark: '#1B98E0',
+      contrastText: '#FFFFFF',
     },
   },
 });
