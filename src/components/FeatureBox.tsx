@@ -10,30 +10,19 @@ interface Props {
 }
 
 const FeatureBox: React.FC<Props> = (props: Props) => (
-    <Grid item md={4} px={4} py={6}>
-        <Box
-            p={1}
-            my={2}
-            sx={{ backgroundColor: 'primary.main' }}
-            width={56}
-            height={56}
-            borderRadius={23}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-        >
-            {props.icon}
-        </Box>
-        <Stack spacing={1} direction="row">
-            <Typography mb={1} variant="h5">
-                {props.title}
-            </Typography>
-            {props.chipContent && <Chip label={props.chipContent} color={props.chipVariant || 'info'} size="small" />}
-        </Stack>
-        <Typography variant="body1">
+    <div className="px-8 py-6 rounded-lg shadow-sm bg-slate-100">
+        <div className="rounded-full bg-teal-500 w-14 h-14 mb-3 flex">
+            <div className="m-auto justify-center content-center">
+                {props.icon}
+            </div>
+        </div>
+        <div className="font-bold text-xl mt-4 mb-2">
+            {props.title}
+        </div>
+        <div>
             {props.content}
-        </Typography>
-    </Grid>
+        </div>
+    </div>
 );
 
 export { FeatureBox };

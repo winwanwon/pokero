@@ -17,6 +17,7 @@ import Summary from "../components/Summary";
 import { NavBar } from "../components/NavBar";
 import Result from "../components/Result";
 import RoomDetail from "../components/RoomDetail";
+import Header from "../components/Header";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -40,7 +41,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const [users, setUsers] = useState<UserDatabase>({});
     const [sudoMode, setSudoMode] = useState<boolean>(false);
     const [visibility, setVisibility] = useState(true);
-    
+
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
@@ -182,7 +183,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 return "Reset";
         }
     };
-    
+
     const getButtonColor = () => {
         return appState === AppState.Init ? 'primary' : 'secondary'
     };
@@ -203,7 +204,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 alignItems="center"
                 justifyContent="center"
                 width="100%"
-                height="95%"   
+                height="95%"
             >
                 {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />}
             </Box>
@@ -235,7 +236,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <NavBar
+            <Header
                 render={
                     <RoomDetail
                         roomName={roomName}

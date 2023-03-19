@@ -27,5 +27,5 @@ export const getAverageFromResult = (selectedUser: User[]): number => {
     return selectedUser.map(user => user.selectedOption).reduce((a, b) => a + b, 0) / selectedUser.length;
 };
 
-export const isValidRoomName = (roomName: string): boolean => !!(roomName.match("^[a-zA-Z0-9-]*$") != null && roomName.length <= 24);
+export const isValidRoomName = (roomName: string): boolean => !!(roomName.match("^[a-zA-Z0-9-]*$") != null && roomName.length <= 16);
 export const isValidUserName = (userName: string): boolean => !!(userName.match("^[a-zA-Z0-9]*$") != null && userName.length <= 12);
