@@ -47,6 +47,7 @@ const App: React.FC = () => {
                 placeholder="Enter room name here"
                 onChange={onChange}
                 onKeyPress={onKeyPress}
+                autoFocus={true}
                 value={roomName}
               />
             </div>
