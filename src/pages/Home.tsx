@@ -30,13 +30,13 @@ const App: React.FC = () => {
         <div className="container max-w-6xl mx-auto pt-12 pb-24 px-5">
           <div className="md:w-3/5">
             <div className="mt-4">
-              <span className="font-extrabold lg:text-7xl text-4xl text-gray-800">Planning Poker,</span><br />
-              <span className="font-extrabold lg:text-7xl text-4xl text-teal-500">Simplified.</span>
+              <span className="font-extrabold lg:text-7xl text-4xl text-gray-800">Planning Poker</span><br />
+              <span className="font-extrabold lg:text-7xl text-4xl text-teal-500">Made Easy.</span>
             </div>
             <div className="mt-4">
               <span className="lg:text-xl text-base">
-                POKERO helps you simplify agile project estimation.<br />
-                Collaborate with ease, plan effectively and deliver efficiently.
+                Effortlessly estimate agile projects with Pokero.<br />
+                Work remotely, collaborate effectively, deliver with ease.
               </span>
             </div>
             <div className="mt-8">
