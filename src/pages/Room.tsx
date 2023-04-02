@@ -68,6 +68,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
             const dbSnap = snapshot.val();
             if (dbSnap) {
                 setAppState(dbSnap.currentState);
+                setPokerMode(dbSnap.pokerMode);
                 dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
             }
         });
