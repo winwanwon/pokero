@@ -5,10 +5,12 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import { keyMap, reverseKeyMap } from '../constants/keyMap';
-import { AppState } from '../enum';
+import { AppState, PokerMode } from '../enum';
+import { PokerModeOptions } from '../constants/pokerMode';
 
 interface OwnProps {
     appState: AppState;
+    pokerMode: PokerMode;
     selectedOption: number;
     setSelectedOption: (option: number) => void;
     onOptionSelect: (option: number) => void;
@@ -19,8 +21,8 @@ interface OwnProps {
 }
 
 const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
-    const { selectedOption, setSelectedOption, appState, onOptionSelect, visibility, setVisibility, enableExtraFn, handleExtraFn } = props;
-    const options = [0, 1, 2, 3, 5, 8, 13];
+    const { pokerMode, selectedOption, setSelectedOption, appState, onOptionSelect, visibility, setVisibility, enableExtraFn, handleExtraFn } = props;
+    const options = PokerModeOptions.find(p => p.id === pokerMode)?.value || [0, 1, 2, 3, 5, 8, 13];
 
     React.useEffect(() => {
         document.body.addEventListener('keydown', (event) => {

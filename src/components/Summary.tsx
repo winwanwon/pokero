@@ -65,7 +65,7 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                     <Typography
                         color={confirmedValue ? 'primary.main' : 'secondary.main'}
                         fontWeight={500}
-                        fontSize={36}
+                        fontSize={30}
                         textAlign="center"
                     >
                         {isRevealed && (selected ? users[key].selectedOption : "-")}
