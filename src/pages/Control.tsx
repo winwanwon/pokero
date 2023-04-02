@@ -5,7 +5,7 @@ import { getDatabase, onValue, ref, update } from "firebase/database";
 import { Box, Stack, Typography } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
 
-import { AppState } from "../enum";
+import { AppState, PokerMode } from "../enum";
 import { isValidRoomName } from "../utils";
 
 import OptionButtonGroup from "../components/OptionButtonGroup";
@@ -23,6 +23,7 @@ const Control: React.FC<Props> = (props: Props) => {
     const params = useParams();
     const roomName = params.roomName?.toLowerCase() || "";
     const [appState, setAppState] = useState<AppState>(AppState.Init);
+    const [pokerMode, setPokerMode] = useState<PokerMode>(PokerMode.Fibonacci);
     const [selectedOption, setSelectedOption] = useState<number>(-1);
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
@@ -44,6 +45,7 @@ const Control: React.FC<Props> = (props: Props) => {
         onValue(ref(database, stateDbPath), (snapshot) => {
             const dbSnap = snapshot.val();
             dbSnap && setAppState(dbSnap.currentState);
+            dbSnap && setPokerMode(dbSnap.pokerMode || PokerMode.Fibonacci);
         });
     }, [database, stateDbPath, thisUserDbPath]);
 
@@ -55,6 +57,7 @@ const Control: React.FC<Props> = (props: Props) => {
 
     const optionButtons = (
         <OptionButtonGroup
+            pokerMode={pokerMode}
             selectedOption={selectedOption}
             setSelectedOption={setSelectedOption}
             appState={appState}
@@ -73,21 +76,21 @@ const Control: React.FC<Props> = (props: Props) => {
 
     return (
         <div className="flex h-screen justify-center items-center">
-                <Stack
-                    spacing={2}
+            <Stack
+                spacing={2}
+            >
+                <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                 >
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <InfoIcon sx={{ fontSize: 16}} />
-                        <Typography variant="caption" ml={1}>Selecting an option for</Typography>
-                        <Typography variant="caption" fontWeight={600}>&nbsp; {name}</Typography>
-                    </Box>
-                    {appState === AppState.Init && optionButtons}
-                    {appState === AppState.Revealed && renderWaitMessage()}
-                </Stack>
+                    <InfoIcon sx={{ fontSize: 16 }} />
+                    <Typography variant="caption" ml={1}>Selecting an option for</Typography>
+                    <Typography variant="caption" fontWeight={600}>&nbsp; {name}</Typography>
+                </Box>
+                {appState === AppState.Init && optionButtons}
+                {appState === AppState.Revealed && renderWaitMessage()}
+            </Stack>
         </div>
     );
 }

@@ -6,7 +6,7 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
 import { Box, Snackbar, Stack } from "@mui/material";
 
-import { AppState } from "../enum";
+import { AppState, PokerMode } from "../enum";
 import { User, UserDatabase } from "../types";
 import { getAverageFromResult, getModeFromResult, isValidRoomName } from "../utils";
 
@@ -17,6 +17,7 @@ import Summary from "../components/Summary";
 import Result from "../components/Result";
 import RoomDetail from "../components/RoomDetail";
 import Header from "../components/Header";
+import SettingsModal from "../components/SettingsModal";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -34,8 +35,10 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const roomName = params.roomName?.toLowerCase() || "";
     const [name, setName] = useState(window.localStorage.getItem("name") || "");
     const [modalOpen, setModalOpen] = useState(true);
+    const [settingsOpen, setSettingsOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [appState, setAppState] = useState<AppState>(AppState.Init);
+    const [pokerMode, setPokerMode] = useState<PokerMode>(PokerMode.Fibonacci);
     const [selectedOption, setSelectedOption] = useState<number>(-1);
     const [users, setUsers] = useState<UserDatabase>({});
     const [sudoMode, setSudoMode] = useState<boolean>(false);
@@ -65,6 +68,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
             const dbSnap = snapshot.val();
             if (dbSnap) {
                 setAppState(dbSnap.currentState);
+                setPokerMode(dbSnap.pokerMode);
                 dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
             }
         });
@@ -78,14 +82,16 @@ const InRoom: React.FC<Props> = (props: Props) => {
             if (!snapshot.exists()) {
                 set(ref(database, stateDbPath), {
                     currentState: AppState.Init,
+                    pokerMode: PokerMode.Fibonacci,
                 });
             } else {
                 setAppState(snapshot.val().currentState);
+                setPokerMode(snapshot.val().pokerMode);
             }
         }).catch((error) => {
             console.error(error);
         });
-    }, [database, stateDbPath, thisUserDbPath, usersDbPath, uuid]);
+    }, [database, pokerMode, stateDbPath, thisUserDbPath, usersDbPath, uuid]);
 
     const onOptionSelect = (option: number) => {
         update(ref(database, thisUserDbPath), {
@@ -93,10 +99,20 @@ const InRoom: React.FC<Props> = (props: Props) => {
         });
     };
 
+    const onPokerModeSelect = (pokerMode: PokerMode) => {
+        setPokerMode(pokerMode);
+        update(ref(database, stateDbPath), {
+            currentState: appState,
+            pokerMode: pokerMode,
+        });
+        resetAppState();
+    };
+
     const onAppStateUpdate = (appState: AppState) => {
         setAppState(appState);
         update(ref(database, stateDbPath), {
             currentState: appState,
+            pokerMode: pokerMode,
         });
     }
 
@@ -155,13 +171,13 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const averageEsimation = getAverageFromResult(selectedUser);
     const modeEstimation = getModeFromResult(selectedUser);
 
-
     const handleExtraFn = () => {
-        window.open(`${window.location.origin}/c/${roomName}`, '_blank', 'height=200,width=480');
+        window.open(`${window.location.origin}/c/${roomName}`, '_blank', 'height=200,width=520');
     };
 
     const optionButtons = (
         <OptionButtonGroup
+            pokerMode={pokerMode}
             selectedOption={selectedOption}
             setSelectedOption={setSelectedOption}
             appState={appState}
@@ -243,6 +259,9 @@ const InRoom: React.FC<Props> = (props: Props) => {
                             logEvent(analytics, 'share');
                             setSnackBarOpen(true);
                         }}
+                        onOpenSettings={
+                            () => setSettingsOpen(true)
+                        }
                     />
                 }
             />
@@ -251,20 +270,26 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     {!modalOpen && content}
                 </div>
                 <PopUpModal
-                        title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
-                        label="Name"
-                        open={modalOpen}
-                        value={name}
-                        setValue={setName}
-                        onSubmit={onSubmitName}
-                    />
-                    <Snackbar
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        open={snackBarOpen}
-                        autoHideDuration={2000}
-                        onClose={() => setSnackBarOpen(false)}
-                        message="Invitation URL copied!"
-                    />
+                    title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
+                    label="Name"
+                    open={modalOpen}
+                    value={name}
+                    setValue={setName}
+                    onSubmit={onSubmitName}
+                />
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    open={snackBarOpen}
+                    autoHideDuration={2000}
+                    onClose={() => setSnackBarOpen(false)}
+                    message="Invitation URL copied!"
+                />
+                <SettingsModal
+                    open={settingsOpen}
+                    onClose={() => setSettingsOpen(false)}
+                    currentPokerMode={pokerMode}
+                    onPokerModeSelect={onPokerModeSelect}
+                />
             </div>
         </>
     );

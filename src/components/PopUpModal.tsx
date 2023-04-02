@@ -42,8 +42,7 @@ const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
             <Modal
                 open={props.open}
                 onClose={props.onClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                onBackdropClick={props.onClose}
             >
                 <Box sx={style}>
                     <Stack spacing={2} justifyContent={'center'}>

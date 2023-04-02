@@ -1,15 +1,17 @@
 import React from 'react'
 import TagIcon from '@mui/icons-material/Tag';
 import ShareIcon from '@mui/icons-material/Share';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, IconButton, Typography } from '@mui/material';
 
 interface OwnProps {
     roomName: string;
     onUrlCopied?: () => void;
+    onOpenSettings?: () => void;
 }
 
 const RoomDetail: React.FC<OwnProps> = (props) => {
-    const { roomName, onUrlCopied } = props;
+    const { roomName, onUrlCopied, onOpenSettings } = props;
     const copyUrl = () => {
         const el = document.createElement("input");
         el.value = window.location.href;
@@ -22,15 +24,20 @@ const RoomDetail: React.FC<OwnProps> = (props) => {
 
     return (
         <Box display="flex" alignItems="center">
-            <Box display="flex" alignItems="center">
-                <TagIcon color="primary" />
-                <Typography variant="h6" color="primary" sx={{ whiteSpace: 'nowrap' }}>
+            <Box display="flex" alignItems="center" mr={1}>
+                <TagIcon />
+                <Typography variant="h6" sx={{ whiteSpace: 'nowrap' }}>
                     {roomName}
                 </Typography>
             </Box>
-            <Box mx={2}>
+            <Box >
                 <IconButton sx={{ color: 'primary.main' }} onClick={copyUrl}>
                     <ShareIcon />
+                </IconButton>
+            </Box>
+            <Box>
+                <IconButton sx={{ color: 'primary.main' }} onClick={onOpenSettings}>
+                    <SettingsIcon />
                 </IconButton>
             </Box>
         </Box>
