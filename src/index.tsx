@@ -12,18 +12,41 @@ import InRoom from './pages/Room';
 import Control from './pages/Control';
 import './index.css';
 
+const theme = createTheme({
+  palette: {
+    background: {
+      default: '#F9F9F9',
+      paper: '#FFFFFF',
+    },
+    primary: {
+      light: '#14B8A6',
+      main: '#14B8A6',
+      dark: '#14B8A6',
+      contrastText: '#FFFFFF',
+    },
+    secondary: {
+      light: '#454545',
+      main: '#454545',
+      dark: '#454545',
+      contrastText: '#FFFFFF',
+    },
+  },
+});
+
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/:roomName" element={<InRoom firebaseApp={app} />} />
-        <Route path="/c/:roomName" element={<Control firebaseApp={app} />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/:roomName" element={<InRoom firebaseApp={app} />} />
+          <Route path="/c/:roomName" element={<Control firebaseApp={app} />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -54,15 +54,16 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
                     width={60}
                     height={60}
                     border={3}
-                    borderColor={confirmedValue ? 'success.light' : 'primary.main'}
+                    borderColor={confirmedValue ? 'primary.light' : 'secondary.main'}
                     borderRadius={30}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    className={confirmedValue ? '' : 'animate-pulse'}
                 >
-                    {isInit && (selected ? <DoneIcon color="success" sx={{ fontSize: 44 }} /> : <QuestionMarkIcon color="primary" sx={{ fontSize: 44 }} />)}
+                    {isInit && (selected ? <DoneIcon color="primary" sx={{ fontSize: 44 }} /> : <QuestionMarkIcon color="secondary" sx={{ fontSize: 44 }} />)}
                     <Typography
-                        color={confirmedValue ? 'success.main' : 'primary.main'}
+                        color={confirmedValue ? 'primary.main' : 'secondary.main'}
                         fontWeight={500}
                         fontSize={36}
                         textAlign="center"
