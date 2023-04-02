@@ -72,14 +72,7 @@ const Control: React.FC<Props> = (props: Props) => {
     }
 
     return (
-        <>
-            <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="100%"
-                height="100%"
-            >
+        <div className="flex h-screen justify-center items-center">
                 <Stack
                     spacing={2}
                 >
@@ -95,8 +88,7 @@ const Control: React.FC<Props> = (props: Props) => {
                     {appState === AppState.Init && optionButtons}
                     {appState === AppState.Revealed && renderWaitMessage()}
                 </Stack>
-            </Box>
-        </>
+        </div>
     );
 }
 

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Box, Container, Snackbar, Stack } from "@mui/material";
+import { Box, Snackbar, Stack } from "@mui/material";
 
 import { AppState } from "../enum";
 import { User, UserDatabase } from "../types";
@@ -14,9 +14,9 @@ import PopUpModal from "../components/PopUpModal";
 import OptionButtonGroup from "../components/OptionButtonGroup";
 import CommandButton from "../components/CommandButton";
 import Summary from "../components/Summary";
-import { NavBar } from "../components/NavBar";
 import Result from "../components/Result";
 import RoomDetail from "../components/RoomDetail";
+import Header from "../components/Header";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -40,7 +40,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const [users, setUsers] = useState<UserDatabase>({});
     const [sudoMode, setSudoMode] = useState<boolean>(false);
     const [visibility, setVisibility] = useState(true);
-    
+
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
@@ -182,7 +182,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 return "Reset";
         }
     };
-    
+
     const getButtonColor = () => {
         return appState === AppState.Init ? 'primary' : 'secondary'
     };
@@ -203,7 +203,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 alignItems="center"
                 justifyContent="center"
                 width="100%"
-                height="95%"   
+                height="95%"
             >
                 {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />}
             </Box>
@@ -235,7 +235,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <NavBar
+            <Header
                 render={
                     <RoomDetail
                         roomName={roomName}
@@ -246,14 +246,11 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     />
                 }
             />
-            <Box
-                sx={{
-                    backgroundColor: 'background.default',
-                    height: '100%',
-                }}
-            >
-                <Container sx={{ height: '100%' }}>
-                    <PopUpModal
+            <div className="w-full max-w-none h-screen bg-slate-50 pt-20">
+                <div className="container max-w-6xl mx-auto flex h-full pb-20 justify-center items-center">
+                    {!modalOpen && content}
+                </div>
+                <PopUpModal
                         title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
                         label="Name"
                         open={modalOpen}
@@ -268,9 +265,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                         onClose={() => setSnackBarOpen(false)}
                         message="Invitation URL copied!"
                     />
-                    {!modalOpen && content}
-                </Container>
-            </Box>
+            </div>
         </>
     );
 }
