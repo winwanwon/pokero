@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -79,10 +80,16 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     });
 
     return (
-        <div className={`w-5/6 md:w-auto grid sm:grid-cols-1 md:grid-cols-${Math.min(userCount, 6)} gap-2`}>
-            {renderAttendees}
-        </div>
+        <>
+            <div className={`md:hidden w-5/6 md:w-auto grid grid-cols-1 gap-2`}>
+                {renderAttendees}
+            </div>
+            <Box className="hidden md:grid" gridTemplateColumns={`repeat(${userCount <= 6 ? userCount : Math.ceil(userCount / 2)}, ${userCount <= 6 ? 1 : 2}fr)`} gap={1} >
+                {renderAttendees}
+            </Box>
+        </>
     );
+
 }
 
 export default PlayArea;
