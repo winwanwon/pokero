@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/material";
-import { isValidUserName } from "../utils";
 
 interface OwnProps {
     title: string;
     label: string;
     open: boolean;
     value: string;
+    onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSubmit: () => void;
     onClose?: () => void;
     setValue?: (s: string) => void;
@@ -27,10 +27,6 @@ const style = {
 };
 
 const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
-    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.setValue && isValidUserName(e.target.value) && props.setValue(e.target.value);
-    }
-
     const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             props.onSubmit();
@@ -49,7 +45,7 @@ const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
                         <Typography variant="h5" gutterBottom component="div">
                             {props.title}
                         </Typography>
-                        <TextField label={props.label} variant="filled" onChange={onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
+                        <TextField label={props.label} variant="filled" onChange={props.onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
                         <Button variant="contained" onClick={props.onSubmit} disabled={!props.value}>Enter</Button>
                     </Stack>
                 </Box>

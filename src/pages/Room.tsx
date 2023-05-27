@@ -4,16 +4,16 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Box, Snackbar, Stack } from "@mui/material";
+import { Snackbar, Stack } from "@mui/material";
 
 import { AppState } from "../enum";
 import { User, UserDatabase } from "../types";
-import { getAverageFromResult, getModeFromResult, isValidRoomName } from "../utils";
+import { getAverageFromResult, getModeFromResult, isValidRoomName, isValidUserName } from "../utils";
 
 import PopUpModal from "../components/PopUpModal";
 import OptionButtonGroup from "../components/OptionButtonGroup";
 import CommandButton from "../components/CommandButton";
-import Summary from "../components/Summary";
+import PlayArea from "../components/PlayArea";
 import Result from "../components/Result";
 import RoomDetail from "../components/RoomDetail";
 import Header from "../components/Header";
@@ -200,7 +200,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
         <>
             <div className="flex flex-col h-full w-full justify-between items-center">
                 <div />
-                <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />
+                <PlayArea appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />
                 <Stack
                     spacing={1}
                     minWidth={420}
@@ -237,20 +237,21 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     {!modalOpen && content}
                 </div>
                 <PopUpModal
-                        title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
-                        label="Name"
-                        open={modalOpen}
-                        value={name}
-                        setValue={setName}
-                        onSubmit={onSubmitName}
-                    />
-                    <Snackbar
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        open={snackBarOpen}
-                        autoHideDuration={2000}
-                        onClose={() => setSnackBarOpen(false)}
-                        message="Room URL copied!"
-                    />
+                    title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
+                    label="Name"
+                    open={modalOpen}
+                    value={name}
+                    setValue={setName}
+                    onSubmit={onSubmitName}
+                    onInputChange={(e) => isValidUserName(e.target.value) && setName(e.target.value)}
+                />
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    open={snackBarOpen}
+                    autoHideDuration={2000}
+                    onClose={() => setSnackBarOpen(false)}
+                    message="Room URL copied!"
+                />
             </div>
         </>
     );

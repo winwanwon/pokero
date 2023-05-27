@@ -14,9 +14,8 @@ interface OwnProps {
     onRemove: (uuid: string) => void;
 }
 
-const Summary: React.FC<OwnProps> = (props: OwnProps) => {
+const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     const { appState, uuid, users, onRemove } = props;
-
     const userCount = Object.keys(users).length;
 
     const renderAttendees = Object.keys(users).map((key) => {
@@ -36,7 +35,7 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
             if (!selected) {
                 return (
                     <>
-                        <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`}></div>
+                        <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`} />
                         <div className={`${circleBorderStyles} border-slate-500 animate-pulse`}>
                             <QuestionMarkIcon color="secondary" sx={{ fontSize: 44 }} />
                         </div>
@@ -69,15 +68,13 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
         }
 
         return (
-            <>
-                <div className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
-                    {isRevealed ? renderPoint() : renderStatusMarker()}
-                    <div className={`text-slate-900 ${key === uuid ? 'font-bold' : ''}`}>
-                        {users[key].name}
-                        {props.showDeleteButton && key !== uuid && <button className="text-red-500" onClick={removePlayer}><ClearIcon sx={{ fontSize: 16 }} /></button>}
-                    </div>
+            <div className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
+                {isRevealed ? renderPoint() : renderStatusMarker()}
+                <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
+                    {users[key].name}
+                    {props.showDeleteButton && key !== uuid && <button className="text-red-500" onClick={removePlayer}><ClearIcon sx={{ fontSize: 16 }} /></button>}
                 </div>
-            </>
+            </div>
         );
     });
 
@@ -89,4 +86,4 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
     );
 }
 
-export default Summary;
+export default PlayArea;
