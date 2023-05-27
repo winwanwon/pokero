@@ -30,6 +30,41 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
             onRemove(key)
         }
 
+        const nonSelectedCardStyles = "border-slate-500";
+        const selectedCardStyles = "border-teal-400 shadow-teal-500/40";
+
+        const renderStatusMarker = () => {
+            if (!selected) {
+                return (
+                    <div className={`w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`}></div>
+                );
+            }
+            return (
+                <div className="w-2 h-2 ml-3 mr-5 flex items-center">
+                    <DoneIcon color="primary" sx={{ fontSize: 22 }} />
+                </div>
+            );
+        }
+
+        const renderPoint = () => {
+            return (
+                <div className="w-10 h-2 flex justify-center items-center text-2xl ƒont-extrabold text-teal-600 text-center">
+                    {selected ? users[key].selectedOption : "-"}
+                </div>
+            );
+        }
+
+        return (
+            <>
+                <div className={`min-w-full h-12 border rounded-lg shadow-md bg-white flex items-center ${selected ? selectedCardStyles : nonSelectedCardStyles}`}>
+                    {isRevealed ? renderPoint() : renderStatusMarker()}
+                    <div className="">
+                        {users[key].name}
+                    </div>
+                </div>
+            </>
+        );
+
         return (
             <Box
                 width={115}
@@ -98,13 +133,9 @@ const Summary: React.FC<OwnProps> = (props: OwnProps) => {
     });
 
     return (
-        <>
-            <Stack direction="column" spacing={4}>
-                <Box display="grid" gridTemplateColumns={`repeat(${userCount <= 6 ? userCount : Math.ceil(userCount / 2)}, ${userCount <= 6 ? 1 : 2}fr)`} gap={2} >
-                    {renderAttendees}
-                </Box>
-            </Stack>
-        </>
+        <div className="w-5/6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+            {renderAttendees}
+        </div>
     );
 }
 

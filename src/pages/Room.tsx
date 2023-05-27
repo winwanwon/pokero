@@ -46,7 +46,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
-    const thisUserDbPath = roomName + '/users/' + uuid;
+    const thisUserDbPath = usersDbPath + uuid;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -214,23 +214,9 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
     const content = (
         <>
-            <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="100%"
-                height="95%"
-            >
-                {!modalOpen && <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />}
-            </Box>
-            <Box
-                position="absolute"
-                bottom={20}
-                left={0}
-                right={0}
-                display="flex"
-                justifyContent="center"
-            >
+            <div className="flex flex-col h-full w-full justify-between items-center">
+                <div />
+                <Summary appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />
                 <Stack
                     spacing={1}
                     minWidth={420}
@@ -245,7 +231,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                         resetAppState={resetAppState}
                     />
                 </Stack>
-            </Box>
+            </div>
         </>
     );
 
@@ -266,7 +252,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 }
             />
             <div className="w-full max-w-none h-screen bg-slate-50 pt-20">
-                <div className="container max-w-6xl mx-auto flex h-full pb-20 justify-center items-center">
+                <div className="container max-w-6xl mx-auto flex h-full pb-12 justify-center items-center">
                     {!modalOpen && content}
                 </div>
                 <PopUpModal
