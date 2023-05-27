@@ -78,9 +78,8 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         );
     });
 
-    const gridColumns = userCount <= 6 ? userCount : 6;
     return (
-        <div className={`w-5/6 md:w-auto grid sm:grid-cols-1 md:grid-cols-${gridColumns} gap-3`}>
+        <div className={`w-5/6 md:w-auto grid sm:grid-cols-1 md:grid-cols-${Math.min(userCount, 6)} gap-2`}>
             {renderAttendees}
         </div>
     );

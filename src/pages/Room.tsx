@@ -27,8 +27,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const app = props.firebaseApp;
     const analytics = getAnalytics();
     const database = getDatabase(app);
-    const uuid = window.sessionStorage.getItem("uuid") || uuidv4();
-    window.sessionStorage.setItem("uuid", uuid);
+    const uuid = window.localStorage.getItem("uuid") || uuidv4();
     window.localStorage.setItem("uuid", uuid);
 
     const params = useParams();
@@ -213,26 +212,30 @@ const InRoom: React.FC<Props> = (props: Props) => {
     };
 
     const content = (
-        <>
-            <div className="flex flex-col h-full w-full justify-between items-center">
-                <div />
-                <PlayArea appState={appState} uuid={uuid} users={users} showDeleteButton={sudoMode} onRemove={onRemove} />
-                <Stack
-                    spacing={1}
-                    minWidth={420}
-                >
-                    {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
-                    {appState === AppState.Init && optionButtons}
-                    {/* {appState === AppState.Init && selectedUserDisplay} */}
-                    <CommandButton
-                        content={getButtonContent()}
-                        color={getButtonColor()}
-                        onClick={onButtonClick}
-                        resetAppState={resetAppState}
-                    />
-                </Stack>
-            </div>
-        </>
+        <div className="flex flex-col h-full w-full justify-between items-center">
+            <div />
+            <PlayArea
+                appState={appState}
+                uuid={uuid}
+                users={users}
+                showDeleteButton={sudoMode}
+                onRemove={onRemove}
+            />
+            <Stack
+                spacing={1}
+                minWidth={420}
+            >
+                {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
+                {appState === AppState.Init && optionButtons}
+                {/* {appState === AppState.Init && selectedUserDisplay} */}
+                <CommandButton
+                    content={getButtonContent()}
+                    color={getButtonColor()}
+                    onClick={onButtonClick}
+                    resetAppState={resetAppState}
+                />
+            </Stack>
+        </div>
     );
 
     return (
@@ -252,7 +255,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 }
             />
             <div className="w-full max-w-none h-screen bg-slate-50 pt-20">
-                <div className="container max-w-6xl mx-auto flex h-full pb-12 justify-center items-center">
+                <div className="container mx-auto flex h-full pb-12">
                     {!modalOpen && content}
                 </div>
                 <PopUpModal
