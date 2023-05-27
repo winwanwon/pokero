@@ -28,4 +28,4 @@ export const getAverageFromResult = (selectedUser: User[]): number => {
 };
 
 export const isValidRoomName = (roomName: string): boolean => !!(roomName.match("^[a-zA-Z0-9-]*$") != null && roomName.length <= 16);
-export const isValidUserName = (userName: string): boolean => !!(userName.match("^[a-zA-Z0-9]*$") != null && userName.length <= 12);
+export const isValidUserName = (userName: string): boolean => !!(userName.match("^[a-zA-Z0-9]*$") != null && userName.length <= 10);
