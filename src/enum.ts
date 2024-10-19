@@ -8,4 +8,5 @@ export enum PokerMode {
     FibonacciPlus = 1,
     Linear = 2,
     TShirt = 3,
+    YesNo = 4
 }

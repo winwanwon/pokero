@@ -38,7 +38,7 @@ const SettingsModal: React.FC<OwnProps> = (props: OwnProps) => {
                 </div>
                 <div className="flex">
                     {value.map((v) => (
-                        <div className="rounded-full min-w-[6] h-6 p-1 bg-slate-300 text-center align-middle mr-1 text-xs font-medium">
+                        <div key={v} className="rounded-full min-w-[6] h-6 p-1 bg-slate-300 text-center align-middle mr-1 text-xs font-medium">
                             {v}
                         </div>
                     ))}

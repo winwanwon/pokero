@@ -74,7 +74,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
         onValue(ref(database, thisUserDbPath), (snapshot) => {
             const dbSnap = snapshot.val();
-            setSelectedOption(dbSnap.selectedOption);
+            setSelectedOption(dbSnap?.selectedOption);
         });
 
         get(ref(database, stateDbPath)).then((snapshot) => {

@@ -46,6 +46,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <Tooltip
                 title={reverseKeyMap[index]}
+                key={index}
                 placement="top"
                 open={!visibility}
                 TransitionComponent={Zoom}
@@ -88,18 +89,14 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return visibility ? (
-        <>
-            <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
-                {renderOptions}
-                {enableExtraFn && renderExtraFn()}
-            </ButtonGroup>
-        </>
+        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
+            {renderOptions}
+            {enableExtraFn && renderExtraFn()}
+        </ButtonGroup>
     ) : (
-        <>
-            <Button variant="text" onClick={onShowOptions}>
-                <ExpandLessIcon /> Show options
-            </Button>
-        </>
+        <Button variant="text" onClick={onShowOptions}>
+            <ExpandLessIcon /> Show options
+        </Button>
     );
 }
 

@@ -69,7 +69,7 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         }
 
         return (
-            <div className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
+            <div key={key} className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
                 {isRevealed ? renderPoint() : renderStatusMarker()}
                 <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
                     {users[key].name}
