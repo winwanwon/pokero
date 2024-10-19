@@ -23,7 +23,7 @@ export const PokerModeOptions = [
         id: PokerMode.TShirt,
         name: 'T-Shirt Size',
         desc: 'Estimate using T-Shirt size scale, useful when the team wants to estimate smaller tasks and doesn\'t need the level of granularity that Fibonacci offers.',
-        value: ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+        value: ["XXS", "XS", "S", "M", "L", "XL", "XXL"],
     },
     {
         id: PokerMode.YesNo,

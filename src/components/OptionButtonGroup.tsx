@@ -89,7 +89,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return visibility ? (
-        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
+        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed} fullWidth>
             {renderOptions}
             {enableExtraFn && renderExtraFn()}
         </ButtonGroup>
