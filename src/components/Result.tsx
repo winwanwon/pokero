@@ -14,12 +14,14 @@ const Result: React.FC<Props> = (props) => {
                 <Typography variant="subtitle2" mb={1}>
                     Average: {!!average ? average.toFixed(1) : "-"}
                 </Typography>
-                <LinearProgress variant="determinate" color="secondary" value={(!!average ? average / 13 : 0) * 100} />
+                {/* TODO: Update to use max value from available options */}
+                <LinearProgress variant="determinate" color="secondary" value={(!!average ? average / 13 : 0) * 100} /> 
             </Box>
             <Box flex={1}>
                 <Typography variant="subtitle2" mb={1}>
                     Majority: {mode >= 0 ? mode : "-"}
                 </Typography>
+                {/* TODO: Update to use max value from available options */}
                 <LinearProgress variant="determinate" color="secondary" value={(mode >= 0 ? mode / 13 : 0) * 100} />
             </Box>
         </Box>

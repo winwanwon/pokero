@@ -38,7 +38,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [appState, setAppState] = useState<AppState>(AppState.Init);
     const [pokerMode, setPokerMode] = useState<PokerMode>(PokerMode.Fibonacci);
-    const [selectedOption, setSelectedOption] = useState<number>(-1);
+    const [selectedOption, setSelectedOption] = useState<number | string>(-1);
     const [users, setUsers] = useState<UserDatabase>({});
     const [sudoMode, setSudoMode] = useState<boolean>(false);
     const [visibility, setVisibility] = useState(true);
@@ -92,7 +92,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
         });
     }, [database, pokerMode, stateDbPath, thisUserDbPath, usersDbPath, uuid]);
 
-    const onOptionSelect = (option: number) => {
+    const onOptionSelect = (option: number | string) => {
         update(ref(database, thisUserDbPath), {
             selectedOption: option,
         });
