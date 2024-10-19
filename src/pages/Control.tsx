@@ -24,7 +24,7 @@ const Control: React.FC<Props> = (props: Props) => {
     const roomName = params.roomName?.toLowerCase() || "";
     const [appState, setAppState] = useState<AppState>(AppState.Init);
     const [pokerMode, setPokerMode] = useState<PokerMode>(PokerMode.Fibonacci);
-    const [selectedOption, setSelectedOption] = useState<number>(-1);
+    const [selectedOption, setSelectedOption] = useState<number | string>(-1);
     const stateDbPath = roomName + '/state/';
     const thisUserDbPath = roomName + '/users/' + uuid;
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const Control: React.FC<Props> = (props: Props) => {
         });
     }, [database, stateDbPath, thisUserDbPath]);
 
-    const onOptionSelect = (option: number) => {
+    const onOptionSelect = (option: number | string) => {
         update(ref(database, thisUserDbPath), {
             selectedOption: option,
         });

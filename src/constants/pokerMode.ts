@@ -19,4 +19,16 @@ export const PokerModeOptions = [
         desc: 'Estimate using linear scale, useful when the team wants to estimate smaller tasks and doesn\'t need the level of granularity that Fibonacci offers.',
         value: [0, 1, 2, 3, 4, 5, 6, 7, 8]
     },
+    {
+        id: PokerMode.TShirt,
+        name: 'T-Shirt Size',
+        desc: 'Estimate using T-Shirt size scale, useful when the team wants to estimate smaller tasks and doesn\'t need the level of granularity that Fibonacci offers.',
+        value: ["XXS", "XS", "S", "M", "L", "XL", "XXL"],
+    },
+    {
+        id: PokerMode.YesNo,
+        name: 'Yes or No',
+        desc: 'Useful when the team wants to estimate tasks in a binary fashion, either it can be done or it can\'t be done.',
+        value: ["Yes", "No"],
+    },
 ];

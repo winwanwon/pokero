@@ -20,7 +20,7 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     const userCount = Object.keys(users).length;
 
     const renderAttendees = Object.keys(users).map((key) => {
-        const selected = users[key].selectedOption > -1;
+        const selected = users[key].selectedOption !== -1;
         const isRevealed = appState === AppState.Revealed;
         const confirmedValue = selected || isRevealed;
 
@@ -57,7 +57,7 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
 
         const renderPoint = () => {
             return (
-                <div className="w-10 h-2 md:w-16 md:h-16 flex justify-center items-center text-2xl md:text-4xl ƒont-black text-teal-600 text-center">
+                <div className="w-10 h-2 md:w-16 md:h-16 flex justify-center items-center text-2xl md:text-3xl ƒont-black text-teal-600 text-center">
                     <div className="md:hidden">
                         {selected ? users[key].selectedOption : "-"}
                     </div>
@@ -69,7 +69,7 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         }
 
         return (
-            <div className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
+            <div key={key} className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
                 {isRevealed ? renderPoint() : renderStatusMarker()}
                 <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
                     {users[key].name}

@@ -11,9 +11,9 @@ import { PokerModeOptions } from '../constants/pokerMode';
 interface OwnProps {
     appState: AppState;
     pokerMode: PokerMode;
-    selectedOption: number;
-    setSelectedOption: (option: number) => void;
-    onOptionSelect: (option: number) => void;
+    selectedOption: number | string;
+    setSelectedOption: (option: number | string) => void;
+    onOptionSelect: (option: number | string) => void;
     visibility?: boolean;
     setVisibility?: React.Dispatch<React.SetStateAction<boolean>>;
     enableExtraFn?: boolean;
@@ -33,7 +33,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         });
     }, []);
 
-    const selectOption = (option: number) => {
+    const selectOption = (option: number | string) => {
         const opt = option === selectedOption ? -1 : option;
         setSelectedOption(opt);
         onOptionSelect(opt);
@@ -46,6 +46,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <Tooltip
                 title={reverseKeyMap[index]}
+                key={index}
                 placement="top"
                 open={!visibility}
                 TransitionComponent={Zoom}
@@ -88,18 +89,14 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return visibility ? (
-        <>
-            <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed}>
-                {renderOptions}
-                {enableExtraFn && renderExtraFn()}
-            </ButtonGroup>
-        </>
+        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed} fullWidth>
+            {renderOptions}
+            {enableExtraFn && renderExtraFn()}
+        </ButtonGroup>
     ) : (
-        <>
-            <Button variant="text" onClick={onShowOptions}>
-                <ExpandLessIcon /> Show options
-            </Button>
-        </>
+        <Button variant="text" onClick={onShowOptions}>
+            <ExpandLessIcon /> Show options
+        </Button>
     );
 }
 

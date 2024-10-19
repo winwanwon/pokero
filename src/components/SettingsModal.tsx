@@ -18,30 +18,27 @@ interface OptionProps {
     id: PokerMode,
     name: string;
     desc?: string;
-    value: number[];
+    value: number[] | string[];
 }
 
 const SettingsModal: React.FC<OwnProps> = (props: OwnProps) => {
     const renderOptions = (optionProps: OptionProps) => {
-        const { id, name, desc, value } = optionProps;
+        const { id, name, value } = optionProps;
         const onClick = () => {
             props.onPokerModeSelect(id);
         };
         return (
             <button
                 key={id}
-                className={`w-full bg-slate-200 rounded-lg p-6 my-1 text-left border-2 ${id === props.currentPokerMode ? 'border-teal-400' : ''}`}
+                className={`w-full bg-slate-200 rounded-lg p-6 my-1 text-left border-2 flex ${id === props.currentPokerMode ? 'border-teal-400' : ''} items-center justify-between`}
                 onClick={onClick}
             >
                 <div className="font-bold">
                     {name}
                 </div>
-                <div className="text-sm mt-2">
-                    {desc}
-                </div>
-                <div className="flex mt-4">
+                <div className="flex">
                     {value.map((v) => (
-                        <div className="rounded-full w-6 h-6 p-1 bg-slate-300 text-center align-middle mr-1 text-xs font-medium">
+                        <div key={v} className="rounded-full min-w-[6] h-6 p-1 bg-slate-300 text-center align-middle mr-1 text-xs font-medium">
                             {v}
                         </div>
                     ))}
@@ -51,7 +48,7 @@ const SettingsModal: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return (
-        <Container maxWidth="xs">
+        <Container maxWidth="xs" >
             <Modal
                 open={props.open}
                 onClose={props.onClose}
