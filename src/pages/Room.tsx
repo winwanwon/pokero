@@ -166,7 +166,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     }, []);
 
     const userList: User[] = Object.keys(users).map(key => users[key]);
-    const selectedUser = userList.filter(x => x.selectedOption > -1);
+    const selectedUser = userList.filter(x => x.selectedOption !== -1);
     const averageEsimation = getAverageFromResult(selectedUser);
     const modeEstimation = getModeFromResult(selectedUser);
 
