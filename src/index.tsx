@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { initializeApp } from "firebase/app";
@@ -36,7 +36,10 @@ const theme = createTheme({
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
-ReactDOM.render(
+const rootElement = document.getElementById("root");
+const root = ReactDOM.createRoot(rootElement as HTMLElement);
+
+root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -47,8 +50,7 @@ ReactDOM.render(
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
