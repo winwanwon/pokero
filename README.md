@@ -36,8 +36,11 @@ REACT_APP_FIREBASE_APP_ID = [YOUR FIREBASE APP ID]
 REACT_APP_FIREBASE_MEASUREMENT_ID = [YOUR FIREBASE MEASUREMENT ID]
 ```
 
+You can find these value from your firebase project settings.
+
 Run local
 ```
+npm install
 npm start
 ```
 
