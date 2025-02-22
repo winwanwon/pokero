@@ -25,18 +25,8 @@ Made with focus on simplicity, no ads or any feature distracting you from the sc
 ## Development Guide
 
 Clone the repository and create .env file in the root path
-```
-REACT_APP_FIREBASE_API_KEY = [YOUR FIREBASE API KEY]
-REACT_APP_FIREBASE_AUTH_DOMAIN = [YOUR FIREBASE AUTH DOMAIN]
-REACT_APP_FIREBASE_DATABASE_URL = [YOUR FIREBASE REALTIME DATABASE URL]
-REACT_APP_FIREBASE_PROJECT_ID = [YOUR FIREBASE PROJECT ID]
-REACT_APP_FIREBASE_STORAGE_BUCKET = [YOUR FIREBASE STORAGE BUCKET]
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID = [YOUR FIREBASE MESSAGING SENDER ID]
-REACT_APP_FIREBASE_APP_ID = [YOUR FIREBASE APP ID]
-REACT_APP_FIREBASE_MEASUREMENT_ID = [YOUR FIREBASE MEASUREMENT ID]
-```
-
-You can find these value from your firebase project settings.
+- See `.env.example` for all environment variables we are using.
+- You can find these value from your firebase project settings.
 
 Run local
 ```
