@@ -27,40 +27,29 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
 
         const nonSelectedCardStyles = "border-slate-500";
         const selectedCardStyles = "border-teal-400 shadow-teal-500/40";
-        const circleBorderStyles = "hidden md:flex w-16 h-16 py-3 border-2 rounded-full justify-center items-center";
+        const circleBorderStyles = "flex w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 border-2 rounded-full justify-center items-center";
 
         const renderStatusMarker = () => {
             if (!selected) {
                 return (
-                    <>
-                        <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`} aria-label="Waiting for selection" />
-                        <div className={`${circleBorderStyles} border-slate-500 animate-pulse`} aria-label="Waiting for selection">
-                            <HelpCircle className="text-secondary" size={44} aria-hidden="true" />
-                        </div>
-                    </>
+                    <div className={`${circleBorderStyles} border-slate-500 animate-pulse`} aria-label="Waiting for selection">
+                        <HelpCircle className="text-secondary" size={32} aria-hidden="true" />
+                    </div>
                 );
             }
             return (
-                <>
-                    <div className="md:hidden w-2 h-2 ml-3 mr-5 flex items-center" aria-label="Selection confirmed">
-                        <Check className="text-primary" size={22} aria-hidden="true" />
-                    </div>
-                    <div className={`${circleBorderStyles} border-teal-500`} aria-label="Selection confirmed">
-                        <Check className="text-primary" size={44} aria-hidden="true" />
-                    </div>
-                </>
+                <div className={`${circleBorderStyles} border-teal-500`} aria-label="Selection confirmed">
+                    <Check className="text-primary" size={32} aria-hidden="true" />
+                </div>
             );
         }
 
         const renderPoint = () => {
             return (
-                <div className="w-10 h-2 md:w-16 md:h-16 flex justify-center items-center text-2xl md:text-3xl ƒont-black text-teal-600 text-center">
-                    <div className="md:hidden">
+                <div className={`${circleBorderStyles} border-teal-500`}>
+                    <span className="text-xl sm:text-2xl md:text-3xl font-black text-teal-600">
                         {selected ? users[key].selectedOption : "-"}
-                    </div>
-                    <div className={`${circleBorderStyles} border-teal-500`}>
-                        {selected ? users[key].selectedOption : "-"}
-                    </div>
+                    </span>
                 </div>
             );
         }
@@ -72,20 +61,20 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <div
                 key={key}
-                className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
+                className={`h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-white flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
                 role="article"
                 aria-label={`${users[key].name}: ${playerStatus}`}
             >
                 {isRevealed ? renderPoint() : renderStatusMarker()}
-                <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
-                    {users[key].name}
+                <div className={`text-slate-900 text-xs sm:text-sm text-center px-1 ${key === uuid ? 'font-bold' : ''}`}>
+                    <div className="truncate max-w-full">{users[key].name}</div>
                     {props.showDeleteButton && key !== uuid && (
                         <button
-                            className="text-red-500 ml-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded"
+                            className="text-red-500 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded inline-flex"
                             onClick={removePlayer}
                             aria-label={`Remove ${users[key].name} from room`}
                         >
-                            <X size={16} aria-hidden="true" />
+                            <X size={14} aria-hidden="true" />
                         </button>
                     )}
                 </div>
@@ -94,19 +83,18 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     });
 
     return (
-        <>
-            <div className={`md:hidden w-5/6 md:w-auto grid grid-cols-1 gap-2`}>
-                {renderAttendees}
-            </div>
-            <div
-                className="hidden md:grid gap-2"
-                style={{
-                    gridTemplateColumns: `repeat(${userCount <= 6 ? userCount : Math.ceil(userCount / 2)}, ${userCount <= 6 ? '1fr' : '2fr'})`
-                }}
-            >
-                {renderAttendees}
-            </div>
-        </>
+        <div
+            className="grid gap-2 sm:gap-3"
+            style={{
+                gridTemplateColumns: userCount <= 3
+                    ? `repeat(${userCount}, minmax(0, 1fr))`
+                    : userCount <= 6
+                        ? 'repeat(3, minmax(0, 1fr))'
+                        : `repeat(${Math.min(4, Math.ceil(userCount / 2))}, minmax(0, 1fr))`
+            }}
+        >
+            {renderAttendees}
+        </div>
     );
 
 }
