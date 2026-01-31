@@ -18,7 +18,7 @@ import PlayArea from "../components/PlayArea";
 import Result from "../components/Result";
 import RoomDetail from "../components/RoomDetail";
 import Header from "../components/Header";
-import SettingsModal from "../components/SettingsModal";
+import SettingsSidebar from "../components/SettingsSidebar";
 import OfflineIndicator from "../components/OfflineIndicator";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 
@@ -340,7 +340,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     onSubmit={onSubmitName}
                     onInputChange={(e) => isValidUserName(e.target.value) && setName(e.target.value)}
                 />
-                <SettingsModal
+                <SettingsSidebar
                     open={settingsOpen}
                     onClose={() => setSettingsOpen(false)}
                     currentPokerMode={pokerMode}
