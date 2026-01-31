@@ -1,8 +1,6 @@
 import React from 'react'
-import TagIcon from '@mui/icons-material/Tag';
-import ShareIcon from '@mui/icons-material/Share';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Hash, Share2, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface OwnProps {
     roomName: string;
@@ -23,24 +21,24 @@ const RoomDetail: React.FC<OwnProps> = (props) => {
     };
 
     return (
-        <Box display="flex" alignItems="center">
-            <Box display="flex" alignItems="center" mr={1}>
-                <TagIcon />
-                <Typography variant="h6" sx={{ whiteSpace: 'nowrap' }}>
+        <div className="flex items-center">
+            <div className="flex items-center mr-2">
+                <Hash className="text-foreground" size={24} />
+                <h6 className="text-xl font-semibold whitespace-nowrap">
                     {roomName}
-                </Typography>
-            </Box>
-            <Box >
-                <IconButton sx={{ color: 'primary.main' }} onClick={copyUrl}>
-                    <ShareIcon />
-                </IconButton>
-            </Box>
-            <Box>
-                <IconButton sx={{ color: 'primary.main' }} onClick={onOpenSettings}>
-                    <SettingsIcon />
-                </IconButton>
-            </Box>
-        </Box>
+                </h6>
+            </div>
+            <div>
+                <Button variant="ghost" size="icon" className="text-primary" onClick={copyUrl}>
+                    <Share2 size={20} />
+                </Button>
+            </div>
+            <div>
+                <Button variant="ghost" size="icon" className="text-primary" onClick={onOpenSettings}>
+                    <Settings size={20} />
+                </Button>
+            </div>
+        </div>
     );
 }
 

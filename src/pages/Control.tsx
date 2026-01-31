@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FirebaseApp } from "firebase/app";
 import { getDatabase, onValue, ref, update } from "firebase/database";
-import { Box, Stack, Typography } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import { Info } from 'lucide-react';
 
 import { AppState, PokerMode } from "../enum";
 import { isValidRoomName } from "../utils";
@@ -68,29 +67,23 @@ const Control: React.FC<Props> = (props: Props) => {
 
     const renderWaitMessage = () => {
         return (
-            <Typography>
+            <p className="text-center">
                 Options will be available once the points get reset.
-            </Typography>
+            </p>
         )
     }
 
     return (
         <div className="flex h-screen justify-center items-center">
-            <Stack
-                spacing={2}
-            >
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <InfoIcon sx={{ fontSize: 16 }} />
-                    <Typography variant="caption" ml={1}>Selecting an option for</Typography>
-                    <Typography variant="caption" fontWeight={600}>&nbsp; {name}</Typography>
-                </Box>
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-center">
+                    <Info size={16} />
+                    <span className="text-xs ml-2">Selecting an option for</span>
+                    <span className="text-xs font-semibold">&nbsp;{name}</span>
+                </div>
                 {appState === AppState.Init && optionButtons}
                 {appState === AppState.Revealed && renderWaitMessage()}
-            </Stack>
+            </div>
         </div>
     );
 }

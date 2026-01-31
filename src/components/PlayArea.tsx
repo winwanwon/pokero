@@ -1,8 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import DoneIcon from '@mui/icons-material/Done';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Check, HelpCircle, X } from 'lucide-react';
 
 import { UserDatabase } from '../types';
 import { AppState } from '../enum';
@@ -38,7 +35,7 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
                     <>
                         <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`} />
                         <div className={`${circleBorderStyles} border-slate-500 animate-pulse`}>
-                            <QuestionMarkIcon color="secondary" sx={{ fontSize: 44 }} />
+                            <HelpCircle className="text-secondary" size={44} />
                         </div>
                     </>
                 );
@@ -46,10 +43,10 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             return (
                 <>
                     <div className="md:hidden w-2 h-2 ml-3 mr-5 flex items-center">
-                        <DoneIcon color="primary" sx={{ fontSize: 22 }} />
+                        <Check className="text-primary" size={22} />
                     </div>
                     <div className={`${circleBorderStyles} border-teal-500`}>
-                        <DoneIcon color="primary" sx={{ fontSize: 44 }} />
+                        <Check className="text-primary" size={44} />
                     </div>
                 </>
             );
@@ -73,7 +70,7 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
                 {isRevealed ? renderPoint() : renderStatusMarker()}
                 <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
                     {users[key].name}
-                    {props.showDeleteButton && key !== uuid && <button className="text-red-500" onClick={removePlayer}><ClearIcon sx={{ fontSize: 16 }} /></button>}
+                    {props.showDeleteButton && key !== uuid && <button className="text-red-500" onClick={removePlayer}><X size={16} /></button>}
                 </div>
             </div>
         );
@@ -84,9 +81,14 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             <div className={`md:hidden w-5/6 md:w-auto grid grid-cols-1 gap-2`}>
                 {renderAttendees}
             </div>
-            <Box className="hidden md:grid" gridTemplateColumns={`repeat(${userCount <= 6 ? userCount : Math.ceil(userCount / 2)}, ${userCount <= 6 ? 1 : 2}fr)`} gap={1} >
+            <div
+                className="hidden md:grid gap-2"
+                style={{
+                    gridTemplateColumns: `repeat(${userCount <= 6 ? userCount : Math.ceil(userCount / 2)}, ${userCount <= 6 ? '1fr' : '2fr'})`
+                }}
+            >
                 {renderAttendees}
-            </Box>
+            </div>
         </>
     );
 

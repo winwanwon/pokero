@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button } from '@/components/ui/button';
 
 interface OwnProps {
     content: string;
@@ -11,8 +11,16 @@ interface OwnProps {
 const CommandButton: React.FC<OwnProps> = (props: OwnProps) => {
     const { color, content, onClick } = props;
 
+    // Map MUI colors to shadcn variants
+    const getVariant = () => {
+        if (color === "primary" || color === "success") return "default";
+        if (color === "error") return "destructive";
+        if (color === "secondary") return "secondary";
+        return "outline";
+    };
+
     return (
-        <Button variant="contained" color={color} onClick={onClick}>
+        <Button variant={getVariant()} onClick={onClick}>
             {content}
         </Button>
     )

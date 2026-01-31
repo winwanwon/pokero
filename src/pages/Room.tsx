@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Snackbar, Stack } from "@mui/material";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 import { AppState, PokerMode } from "../enum";
 import { User, UserDatabase } from "../types";
@@ -29,13 +30,13 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const database = getDatabase(app);
     const uuid = window.localStorage.getItem("uuid") || uuidv4();
     window.localStorage.setItem("uuid", uuid);
+    const { toast } = useToast();
 
     const params = useParams();
     const roomName = params.roomName?.toLowerCase() || "";
     const [name, setName] = useState(window.localStorage.getItem("name") || "");
     const [modalOpen, setModalOpen] = useState(true);
     const [settingsOpen, setSettingsOpen] = useState(false);
-    const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [appState, setAppState] = useState<AppState>(AppState.Init);
     const [pokerMode, setPokerMode] = useState<PokerMode>(PokerMode.Fibonacci);
     const [selectedOption, setSelectedOption] = useState<number | string>(-1);
@@ -221,10 +222,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 showDeleteButton={sudoMode}
                 onRemove={onRemove}
             />
-            <Stack
-                spacing={1}
-                minWidth={420}
-            >
+            <div className="flex flex-col gap-2 min-w-[420px]">
                 {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
                 {appState === AppState.Init && optionButtons}
                 {/* {appState === AppState.Init && selectedUserDisplay} */}
@@ -234,7 +232,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     onClick={onButtonClick}
                     resetAppState={resetAppState}
                 />
-            </Stack>
+            </div>
         </div>
     );
 
@@ -246,7 +244,10 @@ const InRoom: React.FC<Props> = (props: Props) => {
                         roomName={roomName}
                         onUrlCopied={() => {
                             logEvent(analytics, 'share');
-                            setSnackBarOpen(true);
+                            toast({
+                                title: "Room URL copied!",
+                                duration: 2000,
+                            });
                         }}
                         onOpenSettings={
                             () => setSettingsOpen(true)
@@ -267,13 +268,6 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     onSubmit={onSubmitName}
                     onInputChange={(e) => isValidUserName(e.target.value) && setName(e.target.value)}
                 />
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    open={snackBarOpen}
-                    autoHideDuration={2000}
-                    onClose={() => setSnackBarOpen(false)}
-                    message="Room URL copied!"
-                />
                 <SettingsModal
                     open={settingsOpen}
                     onClose={() => setSettingsOpen(false)}
@@ -281,6 +275,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     onPokerModeSelect={onPokerModeSelect}
                 />
             </div>
+            <Toaster />
         </>
     );
 }

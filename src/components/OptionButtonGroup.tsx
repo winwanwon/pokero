@@ -1,8 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { Button, ButtonGroup, Tooltip, Zoom } from '@mui/material';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { Button } from '@/components/ui/button';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ExternalLink, ChevronUp } from 'lucide-react';
 
 import { keyMap, reverseKeyMap } from '../constants/keyMap';
 import { AppState, PokerMode } from '../enum';
@@ -44,25 +49,23 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
             selectOption(option);
         };
         return (
-            <Tooltip
-                title={reverseKeyMap[index]}
-                key={index}
-                placement="top"
-                open={!visibility}
-                TransitionComponent={Zoom}
-                disableFocusListener
-                disableHoverListener
-                disableTouchListener
-            >
-                <Button
-                    key={option}
-                    variant={(option === selectedOption) && visibility ? 'contained' : 'outlined'}
-                    onClick={onClick}
-                    disabled={!visibility}
-                >
-                    {option}
-                </Button>
-            </Tooltip>
+            <TooltipProvider key={index}>
+                <Tooltip open={!visibility}>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant={(option === selectedOption) && visibility ? 'default' : 'outline'}
+                            onClick={onClick}
+                            disabled={!visibility}
+                            className="flex-1"
+                        >
+                            {option}
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Keyboard: {reverseKeyMap[index]}</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         );
     });
 
@@ -73,14 +76,22 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
 
     const renderExtraFn = () => {
         return (
-            <Tooltip title="Open options in new tab" placement="right">
-                <Button
-                    size="small"
-                    onClick={onExtraFnClick}
-                >
-                    <OpenInNewIcon />
-                </Button>
-            </Tooltip>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={onExtraFnClick}
+                        >
+                            <ExternalLink size={16} />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        <p>Open options in new tab</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         );
     }
 
@@ -89,13 +100,13 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return visibility ? (
-        <ButtonGroup variant="outlined" size="large" disabled={appState === AppState.Revealed} fullWidth>
+        <div className="flex gap-1 w-full" aria-disabled={appState === AppState.Revealed}>
             {renderOptions}
             {enableExtraFn && renderExtraFn()}
-        </ButtonGroup>
+        </div>
     ) : (
-        <Button variant="text" onClick={onShowOptions}>
-            <ExpandLessIcon /> Show options
+        <Button variant="ghost" onClick={onShowOptions}>
+            <ChevronUp className="mr-2" size={16} /> Show options
         </Button>
     );
 }

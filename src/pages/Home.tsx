@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TagIcon from '@mui/icons-material/Tag';
-import PeopleIcon from '@mui/icons-material/People';
-import EqualizerIcon from '@mui/icons-material/Equalizer';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Hash, Users, BarChart3, EyeOff } from 'lucide-react';
 import { isValidRoomName } from "../utils";
 import { FeatureBox } from "../components/FeatureBox";
 import Header from "../components/Header";
@@ -40,7 +37,7 @@ const App: React.FC = () => {
               </span>
             </div>
             <div className="mt-8">
-              <TagIcon className="absolute mx-4 my-3" />
+              <Hash className="absolute mx-4 my-3" size={24} />
               <input
                 type="text"
                 className="border-solid border-2 border-teal-500 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-300 caret-teal-500 p-2 pl-12 rounded-lg text-lg w-full max-w-md"
@@ -71,18 +68,18 @@ const App: React.FC = () => {
           <FeatureBox
             title="Real-time interaction"
             content="Vote, estimate, and discuss stories with your teammates in real-time"
-            icon={<PeopleIcon sx={{ color: 'background.default' }} fontSize="large" />}
+            icon={<Users className="text-background" size={36} />}
           />
           <FeatureBox
             title="Statistics provided"
             content="We provide you with statistics about your team's estimations, including average and majority picks."
-            icon={<EqualizerIcon sx={{ color: 'background.default' }} fontSize="large" />}
+            icon={<BarChart3 className="text-background" size={36} />}
           />
           <FeatureBox
             title="Facilitator mode"
             content="Sharing your screen? POKERO allows you to split your options to another window and hide them from your teammates"
             chipVariant="secondary"
-            icon={<VisibilityOffIcon sx={{ color: 'background.default' }} fontSize="large" />}
+            icon={<EyeOff className="text-background" size={36} />}
           />
         </div>
       </div>
