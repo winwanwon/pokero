@@ -4,6 +4,7 @@ import { Hash, Users, BarChart3, EyeOff } from 'lucide-react';
 import { isValidRoomName } from "../utils";
 import { FeatureBox } from "../components/FeatureBox";
 import Header from "../components/Header";
+import OfflineIndicator from "../components/OfflineIndicator";
 
 const App: React.FC = () => {
   let navigate = useNavigate();
@@ -22,6 +23,7 @@ const App: React.FC = () => {
 
   return (
     <>
+      <OfflineIndicator />
       <Header />
       <div className="w-full max-w-none min-h-fit bg-slate-50 pt-20">
         <div className="container max-w-6xl mx-auto pt-12 pb-24 px-5">

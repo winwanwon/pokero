@@ -8,6 +8,7 @@ import { AppState, PokerMode } from "../enum";
 import { isValidRoomName } from "../utils";
 
 import OptionButtonGroup from "../components/OptionButtonGroup";
+import OfflineIndicator from "../components/OfflineIndicator";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -74,7 +75,9 @@ const Control: React.FC<Props> = (props: Props) => {
     }
 
     return (
-        <div className="flex h-screen justify-center items-center">
+        <>
+            <OfflineIndicator />
+            <div className="flex h-screen justify-center items-center">
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-center">
                     <Info size={16} />
@@ -85,6 +88,7 @@ const Control: React.FC<Props> = (props: Props) => {
                 {appState === AppState.Revealed && renderWaitMessage()}
             </div>
         </div>
+        </>
     );
 }
 
