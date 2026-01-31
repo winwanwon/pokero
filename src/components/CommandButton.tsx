@@ -20,7 +20,11 @@ const CommandButton: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return (
-        <Button variant={getVariant()} onClick={onClick}>
+        <Button
+            variant={getVariant()}
+            onClick={onClick}
+            className="w-full min-h-[44px] text-base sm:text-sm active:scale-95 transition-transform duration-100"
+        >
             {content}
         </Button>
     )

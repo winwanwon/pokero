@@ -42,9 +42,16 @@ const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
                             onKeyDown={onKeyPress}
                             value={props.value}
                             autoFocus={true}
+                            aria-required="true"
+                            placeholder={`Enter your ${props.label.toLowerCase()}`}
+                            className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         />
                     </div>
-                    <Button onClick={props.onSubmit} disabled={!props.value}>
+                    <Button
+                        onClick={props.onSubmit}
+                        disabled={!props.value}
+                        className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    >
                         Enter
                     </Button>
                 </div>

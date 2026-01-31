@@ -213,7 +213,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     };
 
     const content = (
-        <div className="flex flex-col h-full w-full justify-between items-center">
+        <div className="flex flex-col h-full w-full justify-between items-center px-4 sm:px-0">
             <div />
             <PlayArea
                 appState={appState}
@@ -222,7 +222,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 showDeleteButton={sudoMode}
                 onRemove={onRemove}
             />
-            <div className="flex flex-col gap-2 min-w-[420px]">
+            <div className="flex flex-col gap-2 w-full sm:min-w-[420px] max-w-2xl">
                 {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
                 {appState === AppState.Init && optionButtons}
                 {/* {appState === AppState.Init && selectedUserDisplay} */}

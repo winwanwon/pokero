@@ -48,15 +48,18 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         const onClick = () => {
             selectOption(option);
         };
+        const isSelected = option === selectedOption;
         return (
             <TooltipProvider key={index}>
                 <Tooltip open={!visibility}>
                     <TooltipTrigger asChild>
                         <Button
-                            variant={(option === selectedOption) && visibility ? 'default' : 'outline'}
+                            variant={isSelected && visibility ? 'default' : 'outline'}
                             onClick={onClick}
                             disabled={!visibility}
-                            className="flex-1"
+                            className="flex-1 min-h-[44px] min-w-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-base sm:text-sm active:scale-95 transition-transform duration-100"
+                            aria-label={`Select ${option} points (keyboard shortcut: ${reverseKeyMap[index]})`}
+                            aria-pressed={isSelected}
                         >
                             {option}
                         </Button>
@@ -83,6 +86,8 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
                             size="sm"
                             variant="outline"
                             onClick={onExtraFnClick}
+                            className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                            aria-label="Open options in new tab"
                         >
                             <ExternalLink size={16} />
                         </Button>

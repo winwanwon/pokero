@@ -37,22 +37,27 @@ const App: React.FC = () => {
               </span>
             </div>
             <div className="mt-8">
-              <Hash className="absolute mx-4 my-3" size={24} />
+              <label htmlFor="room-name-input" className="sr-only">Room name</label>
+              <Hash className="absolute mx-4 my-3" size={24} aria-hidden="true" />
               <input
+                id="room-name-input"
                 type="text"
-                className="border-solid border-2 border-teal-500 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-300 caret-teal-500 p-2 pl-12 rounded-lg text-lg w-full max-w-md"
+                className="border-solid border-2 border-teal-500 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 caret-teal-500 p-2 pl-12 rounded-lg text-lg w-full max-w-md"
                 placeholder="Enter room name here"
                 onChange={onChange}
                 onKeyPress={onKeyPress}
                 autoFocus={true}
                 value={roomName}
+                aria-label="Room name"
+                aria-required="true"
               />
             </div>
             <div className="mt-2">
               <button
-                className="shadow-lg bg-teal-500 text-white disabled:bg-slate-200 disabled:text-slate-400 py-2 rounded-lg font-bold text-lg w-full max-w-md"
+                className="shadow-lg bg-teal-500 text-white disabled:bg-slate-200 disabled:text-slate-400 py-2 rounded-lg font-bold text-lg w-full max-w-md transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:cursor-not-allowed"
                 disabled={!roomName}
                 onClick={onJoinButtonClick}
+                aria-label={roomName ? `Join room ${roomName}` : 'Join room'}
               >
                 Join {roomName && `#${roomName}`}
               </button>

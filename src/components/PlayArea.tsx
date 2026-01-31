@@ -33,20 +33,20 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             if (!selected) {
                 return (
                     <>
-                        <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`} />
-                        <div className={`${circleBorderStyles} border-slate-500 animate-pulse`}>
-                            <HelpCircle className="text-secondary" size={44} />
+                        <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`} aria-label="Waiting for selection" />
+                        <div className={`${circleBorderStyles} border-slate-500 animate-pulse`} aria-label="Waiting for selection">
+                            <HelpCircle className="text-secondary" size={44} aria-hidden="true" />
                         </div>
                     </>
                 );
             }
             return (
                 <>
-                    <div className="md:hidden w-2 h-2 ml-3 mr-5 flex items-center">
-                        <Check className="text-primary" size={22} />
+                    <div className="md:hidden w-2 h-2 ml-3 mr-5 flex items-center" aria-label="Selection confirmed">
+                        <Check className="text-primary" size={22} aria-hidden="true" />
                     </div>
-                    <div className={`${circleBorderStyles} border-teal-500`}>
-                        <Check className="text-primary" size={44} />
+                    <div className={`${circleBorderStyles} border-teal-500`} aria-label="Selection confirmed">
+                        <Check className="text-primary" size={44} aria-hidden="true" />
                     </div>
                 </>
             );
@@ -65,12 +65,29 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             );
         }
 
+        const playerStatus = isRevealed
+            ? `Voted ${users[key].selectedOption}`
+            : (selected ? 'Vote submitted' : 'Waiting to vote');
+
         return (
-            <div key={key} className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
+            <div
+                key={key}
+                className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
+                role="article"
+                aria-label={`${users[key].name}: ${playerStatus}`}
+            >
                 {isRevealed ? renderPoint() : renderStatusMarker()}
                 <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
                     {users[key].name}
-                    {props.showDeleteButton && key !== uuid && <button className="text-red-500" onClick={removePlayer}><X size={16} /></button>}
+                    {props.showDeleteButton && key !== uuid && (
+                        <button
+                            className="text-red-500 ml-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded"
+                            onClick={removePlayer}
+                            aria-label={`Remove ${users[key].name} from room`}
+                        >
+                            <X size={16} aria-hidden="true" />
+                        </button>
+                    )}
                 </div>
             </div>
         );
