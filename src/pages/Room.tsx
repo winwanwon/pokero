@@ -327,7 +327,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     />
                 }
             />
-            <div className="w-full max-w-none h-screen bg-slate-50 pt-20">
+            <div className="w-full max-w-none h-screen bg-background pt-20">
                 <div className="container mx-auto flex h-full pb-12">
                     {!modalOpen && renderContent()}
                 </div>

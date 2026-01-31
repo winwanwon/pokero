@@ -28,19 +28,19 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <button
                 key={id}
-                className={`w-full bg-slate-200 rounded-lg p-6 my-1 text-left border-2 flex ${
-                    id === props.currentPokerMode ? 'border-teal-400' : 'border-transparent'
-                } items-center justify-between hover:border-teal-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`}
+                className={`w-full bg-muted rounded-lg p-6 my-1 text-left border-2 flex ${
+                    id === props.currentPokerMode ? 'border-primary' : 'border-transparent'
+                } items-center justify-between hover:border-primary/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`}
                 onClick={onClick}
                 aria-label={`Select ${name} poker mode`}
                 aria-pressed={id === props.currentPokerMode}
             >
-                <div className="font-bold">{name}</div>
+                <div className="font-bold text-foreground">{name}</div>
                 <div className="flex gap-1">
                     {value.map((v) => (
                         <div
                             key={v}
-                            className="rounded-full min-w-[24px] h-6 px-2 bg-slate-300 text-center flex items-center justify-center text-xs font-medium"
+                            className="rounded-full min-w-[24px] h-6 px-2 bg-background text-foreground text-center flex items-center justify-center text-xs font-medium"
                         >
                             {v}
                         </div>
@@ -63,7 +63,7 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+                className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-background shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
                     props.open ? 'translate-x-0' : 'translate-x-full'
                 }`}
                 role="dialog"
@@ -71,10 +71,10 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
                 aria-labelledby="settings-sidebar-title"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between p-6 border-b border-border">
                     <div className="flex items-center gap-3">
                         <Settings className="text-primary" size={24} />
-                        <h2 id="settings-sidebar-title" className="text-xl font-bold text-gray-800">
+                        <h2 id="settings-sidebar-title" className="text-xl font-bold text-foreground">
                             Room Settings
                         </h2>
                     </div>
@@ -91,10 +91,10 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
 
                 {/* Content */}
                 <div className="p-6 overflow-y-auto h-[calc(100%-80px)]">
-                    <div className="text-lg font-semibold mb-3 text-gray-800">
+                    <div className="text-lg font-semibold mb-3 text-foreground">
                         Poker Mode
                     </div>
-                    <p className="text-sm text-slate-600 mb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
                         Choose the estimation scale for your planning poker session
                     </p>
                     {PokerModeOptions.map(renderOptions)}

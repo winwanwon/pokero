@@ -25,20 +25,20 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             onRemove(key)
         }
 
-        const nonSelectedCardStyles = "border-slate-500";
-        const selectedCardStyles = "border-teal-400 shadow-teal-500/40";
+        const nonSelectedCardStyles = "border-border";
+        const selectedCardStyles = "border-primary shadow-primary/40";
         const circleBorderStyles = "flex w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 border-2 rounded-full justify-center items-center";
 
         const renderStatusMarker = () => {
             if (!selected) {
                 return (
-                    <div className={`${circleBorderStyles} border-slate-500 animate-pulse`} aria-label="Waiting for selection">
-                        <HelpCircle className="text-secondary" size={32} aria-hidden="true" />
+                    <div className={`${circleBorderStyles} border-border animate-pulse`} aria-label="Waiting for selection">
+                        <HelpCircle className="text-muted-foreground" size={32} aria-hidden="true" />
                     </div>
                 );
             }
             return (
-                <div className={`${circleBorderStyles} border-teal-500`} aria-label="Selection confirmed">
+                <div className={`${circleBorderStyles} border-primary`} aria-label="Selection confirmed">
                     <Check className="text-primary" size={32} aria-hidden="true" />
                 </div>
             );
@@ -46,8 +46,8 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
 
         const renderPoint = () => {
             return (
-                <div className={`${circleBorderStyles} border-teal-500`}>
-                    <span className="text-xl sm:text-2xl md:text-3xl font-black text-teal-600">
+                <div className={`${circleBorderStyles} border-primary`}>
+                    <span className="text-xl sm:text-2xl md:text-3xl font-black text-primary">
                         {selected ? users[key].selectedOption : "-"}
                     </span>
                 </div>
@@ -61,16 +61,16 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <div
                 key={key}
-                className={`h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-white flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
+                className={`h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-card flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
                 role="article"
                 aria-label={`${users[key].name}: ${playerStatus}`}
             >
                 {isRevealed ? renderPoint() : renderStatusMarker()}
-                <div className={`text-slate-900 text-xs sm:text-sm text-center px-1 ${key === uuid ? 'font-bold' : ''}`}>
+                <div className={`text-card-foreground text-xs sm:text-sm text-center px-1 ${key === uuid ? 'font-bold' : ''}`}>
                     <div className="truncate max-w-full">{users[key].name}</div>
                     {props.showDeleteButton && key !== uuid && (
                         <button
-                            className="text-red-500 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded inline-flex"
+                            className="text-destructive mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded inline-flex"
                             onClick={removePlayer}
                             aria-label={`Remove ${users[key].name} from room`}
                         >

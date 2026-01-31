@@ -25,26 +25,26 @@ const App: React.FC = () => {
     <>
       <OfflineIndicator />
       <Header />
-      <div className="w-full max-w-none min-h-fit bg-slate-50 pt-20">
+      <div className="w-full max-w-none min-h-fit bg-background pt-20">
         <div className="container max-w-6xl mx-auto pt-12 pb-24 px-5">
           <div className="md:w-3/5">
             <div className="mt-4">
-              <span className="font-extrabold lg:text-7xl text-4xl text-gray-800">Planning Poker</span><br />
-              <span className="font-extrabold lg:text-7xl text-4xl text-teal-500">Made Easy.</span>
+              <span className="font-extrabold lg:text-7xl text-4xl text-foreground">Planning Poker</span><br />
+              <span className="font-extrabold lg:text-7xl text-4xl text-primary">Made Easy.</span>
             </div>
             <div className="mt-4">
-              <span className="lg:text-xl text-base">
+              <span className="lg:text-xl text-base text-foreground">
                 Effortlessly estimate agile projects with Pokero.<br />
                 Work remotely, collaborate effectively, deliver with ease.
               </span>
             </div>
             <div className="mt-8">
               <label htmlFor="room-name-input" className="sr-only">Room name</label>
-              <Hash className="absolute mx-4 my-3" size={24} aria-hidden="true" />
+              <Hash className="absolute mx-4 my-3 text-foreground" size={24} aria-hidden="true" />
               <input
                 id="room-name-input"
                 type="text"
-                className="border-solid border-2 border-teal-500 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 caret-teal-500 p-2 pl-12 rounded-lg text-lg w-full max-w-md"
+                className="border-solid border-2 border-primary bg-background text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 caret-primary p-2 pl-12 rounded-lg text-lg w-full max-w-md"
                 placeholder="Enter room name here"
                 onChange={onChange}
                 onKeyPress={onKeyPress}
@@ -56,7 +56,7 @@ const App: React.FC = () => {
             </div>
             <div className="mt-2">
               <button
-                className="shadow-lg bg-teal-500 text-white disabled:bg-slate-200 disabled:text-slate-400 py-2 rounded-lg font-bold text-lg w-full max-w-md transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:cursor-not-allowed"
+                className="shadow-lg bg-primary text-primary-foreground disabled:bg-muted disabled:text-muted-foreground py-2 rounded-lg font-bold text-lg w-full max-w-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed"
                 disabled={!roomName}
                 onClick={onJoinButtonClick}
                 aria-label={roomName ? `Join room ${roomName}` : 'Join room'}
@@ -68,7 +68,7 @@ const App: React.FC = () => {
         </div>
       </div>
       <div className="container max-w-6xl mx-auto py-12 px-5">
-        <div className="font-extrabold lg:text-5xl text-2xl text-gray-800 text-center my-12">
+        <div className="font-extrabold lg:text-5xl text-2xl text-foreground text-center my-12">
           Packed with Features
         </div>
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
@@ -91,11 +91,11 @@ const App: React.FC = () => {
         </div>
       </div>
       <div className="container max-w-6xl mx-auto py-8 px-5 text-center">
-        <div className="text-xs text-slate-500 my-1">
+        <div className="text-xs text-muted-foreground my-1">
           Copyright © 2023 Pokero. All rights reserved.
         </div>
-        <div className="text-xs text-slate-500 my-1">
-          Contribute to this project on <a className="dercoration-teal-500 underline text-teal-500" target="_blank" href="https://github.com/winwanwon/pokero" rel="noreferrer">GitHub</a>
+        <div className="text-xs text-muted-foreground my-1">
+          Contribute to this project on <a className="decoration-primary underline text-primary hover:text-primary/80" target="_blank" href="https://github.com/winwanwon/pokero" rel="noreferrer">GitHub</a>
         </div>
       </div>
     </>
