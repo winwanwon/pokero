@@ -82,17 +82,14 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         );
     });
 
+    const getGridClass = () => {
+        if (userCount <= 3) return `grid-cols-${userCount}`;
+        if (userCount <= 6) return `grid-cols-3 md:grid-cols-${userCount}`;
+        return 'grid-cols-3 md:grid-cols-6';
+    };
+
     return (
-        <div
-            className="grid gap-2 sm:gap-3"
-            style={{
-                gridTemplateColumns: userCount <= 3
-                    ? `repeat(${userCount}, minmax(0, 1fr))`
-                    : userCount <= 6
-                        ? 'repeat(3, minmax(0, 1fr))'
-                        : `repeat(${Math.min(4, Math.ceil(userCount / 2))}, minmax(0, 1fr))`
-            }}
-        >
+        <div className={`grid gap-2 sm:gap-3 md:gap-4 ${getGridClass()}`}>
             {renderAttendees}
         </div>
     );
