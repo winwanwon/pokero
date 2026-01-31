@@ -83,10 +83,9 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
-                            size="sm"
                             variant="outline"
                             onClick={onExtraFnClick}
-                            className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                            className="min-h-[44px] min-w-[44px] px-3 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-95 transition-transform duration-100"
                             aria-label="Open options in new tab"
                         >
                             <ExternalLink size={16} />
