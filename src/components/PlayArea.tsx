@@ -85,8 +85,11 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     });
 
     const getGridClass = () => {
-        if (userCount <= 3) return `grid-cols-${userCount}`;
-        if (userCount <= 6) return `grid-cols-3 md:grid-cols-${userCount}`;
+        // Mobile: 2-3 columns, Desktop: up to 6 columns in a row
+        if (userCount === 1) return 'grid-cols-1';
+        if (userCount === 2) return 'grid-cols-2 md:grid-cols-2';
+        if (userCount <= 6) return 'grid-cols-3 md:grid-cols-6';
+        // 7+ players: 3 columns on mobile, 6 on desktop (creates multiple rows)
         return 'grid-cols-3 md:grid-cols-6';
     };
 
