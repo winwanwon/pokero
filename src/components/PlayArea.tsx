@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, HelpCircle, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
 import { UserDatabase } from '../types';
 import { AppState } from '../enum';
@@ -33,7 +33,9 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             if (!selected) {
                 return (
                     <div className={`${circleBorderStyles} border-border animate-pulse`} aria-label="Waiting for selection">
-                        <HelpCircle className="text-muted-foreground" size={32} aria-hidden="true" />
+                        <span className="text-xl sm:text-2xl md:text-3xl font-black text-muted-foreground">
+                            ?
+                        </span>
                     </div>
                 );
             }
