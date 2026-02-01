@@ -63,22 +63,22 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <div
                 key={key}
-                className={`h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-card flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
+                className={`relative h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-card flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
                 role="article"
                 aria-label={`${users[key].name}: ${playerStatus}`}
             >
+                {props.showDeleteButton && key !== uuid && (
+                    <button
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 flex items-center justify-center shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 z-10"
+                        onClick={removePlayer}
+                        aria-label={`Remove ${users[key].name} from room`}
+                    >
+                        <X size={14} aria-hidden="true" />
+                    </button>
+                )}
                 {isRevealed ? renderPoint() : renderStatusMarker()}
                 <div className={`text-card-foreground text-xs sm:text-sm text-center px-1 ${key === uuid ? 'font-bold' : ''}`}>
                     <div className="truncate max-w-full">{users[key].name}</div>
-                    {props.showDeleteButton && key !== uuid && (
-                        <button
-                            className="text-destructive mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 rounded inline-flex"
-                            onClick={removePlayer}
-                            aria-label={`Remove ${users[key].name} from room`}
-                        >
-                            <X size={14} aria-hidden="true" />
-                        </button>
-                    )}
                 </div>
             </div>
         );
