@@ -97,25 +97,15 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
         const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
 
-        if (isLastOne) {
-            console.log('🔔 Notification check:', {
-                isLastOne,
-                notificationsEnabled,
-                hasNotificationAPI: 'Notification' in window,
-                permission: 'Notification' in window ? Notification.permission : 'N/A',
-                willNotify: notificationsEnabled && 'Notification' in window && Notification.permission === 'granted'
+        if (isLastOne && notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+            const notification = new Notification('Your turn! 🎯', {
+                body: 'You\'re the last person who hasn\'t voted yet.',
             });
 
-            if (notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-                const notification = new Notification('Your turn! 🎯', {
-                    body: 'You\'re the last person who hasn\'t voted yet.',
-                });
-
-                notification.onclick = () => {
-                    window.focus();
-                    notification.close();
-                };
-            }
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
         }
     }, [users, uuid, appState, notificationsEnabled]);
 

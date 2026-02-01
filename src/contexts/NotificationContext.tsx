@@ -10,21 +10,15 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
     const stored = localStorage.getItem('notificationsEnabled');
-    const value = stored !== null ? stored === 'true' : true;
-    console.log('🔔 NotificationProvider initialized:', { stored, value });
-    return value;
+    return stored !== null ? stored === 'true' : true;
   });
 
   useEffect(() => {
-    console.log('🔔 Saving notification preference:', notificationsEnabled);
     localStorage.setItem('notificationsEnabled', String(notificationsEnabled));
   }, [notificationsEnabled]);
 
   const toggleNotifications = () => {
-    setNotificationsEnabled((prev) => {
-      console.log('🔔 Toggling notifications:', { from: prev, to: !prev });
-      return !prev;
-    });
+    setNotificationsEnabled((prev) => !prev);
   };
 
   return (
