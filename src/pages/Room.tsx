@@ -47,6 +47,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const [visibility, setVisibility] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [connectionError, setConnectionError] = useState(false);
+    const [hasNotifiedThisRound, setHasNotifiedThisRound] = useState(false);
 
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
@@ -58,6 +59,57 @@ const InRoom: React.FC<Props> = (props: Props) => {
             navigate('/');
         }
     }, [roomName, navigate]);
+
+    // Request notification permission
+    useEffect(() => {
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    }, []);
+
+    // Notify when user is last person who hasn't voted
+    useEffect(() => {
+        // Only check during voting (Init state)
+        if (appState !== AppState.Init) {
+            setHasNotifiedThisRound(false);
+            return;
+        }
+
+        // Don't notify if already notified this round
+        if (hasNotifiedThisRound) return;
+
+        // Don't notify if user hasn't joined yet
+        if (!users[uuid]) return;
+
+        const userList = Object.keys(users);
+        const totalUsers = userList.length;
+
+        // Need at least 2 people in the room
+        if (totalUsers < 2) return;
+
+        const currentUserVoted = users[uuid].selectedOption !== -1;
+
+        // Don't notify if current user has already voted
+        if (currentUserVoted) return;
+
+        // Count how many users haven't voted
+        const usersWhoHaventVoted = userList.filter(
+            (key) => users[key].selectedOption === -1
+        );
+
+        // Notify if current user is the only one who hasn't voted
+        if (usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Your turn! 🎯', {
+                    body: 'You\'re the last person who hasn\'t voted yet!',
+                    icon: '/pokero-logo-v3.png',
+                    tag: 'poker-vote-reminder',
+                    requireInteraction: false,
+                });
+                setHasNotifiedThisRound(true);
+            }
+        }
+    }, [users, uuid, appState, hasNotifiedThisRound]);
 
     useEffect(() => {
         const usersUnsubscribe = onValue(
