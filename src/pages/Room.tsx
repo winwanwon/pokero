@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AppState, PokerMode } from "../enum";
 import { User, UserDatabase } from "../types";
 import { getAverageFromResult, getModeFromResult, isValidRoomName, isValidUserName } from "../utils";
+import { useNotification } from "../hooks/useNotification";
 
 import PopUpModal from "../components/PopUpModal";
 import OptionButtonGroup from "../components/OptionButtonGroup";
@@ -33,6 +34,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const uuid = window.localStorage.getItem("uuid") || uuidv4();
     window.localStorage.setItem("uuid", uuid);
     const { toast } = useToast();
+    const { notificationsEnabled } = useNotification();
 
     const params = useParams();
     const roomName = params.roomName?.toLowerCase() || "";
@@ -95,7 +97,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
         const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
 
-        if (isLastOne && 'Notification' in window && Notification.permission === 'granted') {
+        if (isLastOne && notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
             const notification = new Notification('Your turn! 🎯', {
                 body: 'You\'re the last person who hasn\'t voted yet.',
             });
@@ -105,7 +107,7 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 notification.close();
             };
         }
-    }, [users, uuid, appState]);
+    }, [users, uuid, appState, notificationsEnabled]);
 
     useEffect(() => {
         const usersUnsubscribe = onValue(

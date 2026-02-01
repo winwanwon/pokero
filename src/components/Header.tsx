@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DarkModeToggle from './DarkModeToggle';
+import NotificationToggle from './NotificationToggle';
 
 interface Props {
     render?: JSX.Element;
@@ -29,6 +30,7 @@ const Header: React.FC<Props> = (props: Props) => {
                     </div>
                     <div className="flex items-center gap-2">
                         {props.render}
+                        <NotificationToggle />
                         <DarkModeToggle />
                     </div>
                 </div>
