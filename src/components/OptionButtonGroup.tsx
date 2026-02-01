@@ -7,7 +7,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ExternalLink, ChevronUp } from 'lucide-react';
+import { ExternalLink, ChevronUp, Keyboard } from 'lucide-react';
 
 import { keyMap, reverseKeyMap } from '../constants/keyMap';
 import { AppState, PokerMode } from '../enum';
@@ -104,9 +104,15 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return visibility ? (
-        <div className="flex gap-1 w-full" aria-disabled={appState === AppState.Revealed}>
-            {renderOptions}
-            {enableExtraFn && renderExtraFn()}
+        <div className="w-full space-y-2">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <Keyboard size={14} aria-hidden="true" />
+                <span>Press Q-W-E-R-T-Y-U to select</span>
+            </div>
+            <div className="flex gap-1 w-full" aria-disabled={appState === AppState.Revealed}>
+                {renderOptions}
+                {enableExtraFn && renderExtraFn()}
+            </div>
         </div>
     ) : (
         <Button variant="ghost" onClick={onShowOptions}>
