@@ -107,7 +107,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         <div className="w-full space-y-2">
             <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Keyboard size={14} aria-hidden="true" />
-                <span>Press Q-W-E-R-T-Y-U to select</span>
+                <span>Press Q-W-E-R-T-Y-U-I-O to select</span>
             </div>
             <div className="flex gap-1 w-full" aria-disabled={appState === AppState.Revealed}>
                 {renderOptions}

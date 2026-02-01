@@ -6,6 +6,8 @@ export const keyMap: { [key: string]: number } = {
     't': 4,
     'y': 5,
     'u': 6,
+    'i': 7,
+    'o': 8,
 };
 
 export const reverseKeyMap: { [key: number]: string } = {
@@ -16,4 +18,6 @@ export const reverseKeyMap: { [key: number]: string } = {
     4: 'T',
     5: 'Y',
     6: 'U',
+    7: 'I',
+    8: 'O',
 };
