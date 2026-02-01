@@ -120,7 +120,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
 
     return visibility ? (
         <div className="w-full space-y-2">
-            <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <div className="hidden sm:flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Keyboard size={14} aria-hidden="true" />
                 <span>Press {getKeyboardHint()} to select</span>
             </div>
