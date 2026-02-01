@@ -6,6 +6,7 @@ import { getAnalytics } from "firebase/analytics";
 import { firebaseConfig } from "./config";
 import { Toaster } from "@/components/ui/toaster";
 import ErrorBoundary from './components/ErrorBoundary';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 import reportWebVitals from './reportWebVitals';
 import App from './pages/Home';
@@ -22,14 +23,16 @@ const root = ReactDOM.createRoot(rootElement as HTMLElement);
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/:roomName" element={<InRoom firebaseApp={app} />} />
-          <Route path="/c/:roomName" element={<Control firebaseApp={app} />} />
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
+      <NotificationProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/:roomName" element={<InRoom firebaseApp={app} />} />
+            <Route path="/c/:roomName" element={<Control firebaseApp={app} />} />
+          </Routes>
+          <Toaster />
+        </BrowserRouter>
+      </NotificationProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );

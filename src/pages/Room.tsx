@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AppState, PokerMode } from "../enum";
 import { User, UserDatabase } from "../types";
 import { getAverageFromResult, getModeFromResult, isValidRoomName, isValidUserName } from "../utils";
-import { useNotification } from "../hooks/useNotification";
+import { useNotification } from "../contexts/NotificationContext";
 
 import PopUpModal from "../components/PopUpModal";
 import OptionButtonGroup from "../components/OptionButtonGroup";
@@ -97,15 +97,25 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
         const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
 
-        if (isLastOne && notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-            const notification = new Notification('Your turn! 🎯', {
-                body: 'You\'re the last person who hasn\'t voted yet.',
+        if (isLastOne) {
+            console.log('🔔 Notification check:', {
+                isLastOne,
+                notificationsEnabled,
+                hasNotificationAPI: 'Notification' in window,
+                permission: 'Notification' in window ? Notification.permission : 'N/A',
+                willNotify: notificationsEnabled && 'Notification' in window && Notification.permission === 'granted'
             });
 
-            notification.onclick = () => {
-                window.focus();
-                notification.close();
-            };
+            if (notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+                const notification = new Notification('Your turn! 🎯', {
+                    body: 'You\'re the last person who hasn\'t voted yet.',
+                });
+
+                notification.onclick = () => {
+                    window.focus();
+                    notification.close();
+                };
+            }
         }
     }, [users, uuid, appState, notificationsEnabled]);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bell, BellOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNotification } from '@/hooks/useNotification';
+import { useNotification } from '@/contexts/NotificationContext';
 
 const NotificationToggle: React.FC = () => {
   const { notificationsEnabled, toggleNotifications } = useNotification();
