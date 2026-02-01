@@ -28,8 +28,13 @@ const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return (
-        <Dialog open={props.open} onOpenChange={props.onClose}>
-            <DialogContent className="sm:max-w-[425px]">
+        <Dialog open={props.open} modal>
+            <DialogContent
+                className="sm:max-w-[425px]"
+                hideCloseButton
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+            >
                 <DialogHeader>
                     <DialogTitle>{props.title}</DialogTitle>
                 </DialogHeader>
