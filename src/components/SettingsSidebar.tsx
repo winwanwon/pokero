@@ -35,7 +35,7 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
                 aria-label={`Select ${name} poker mode`}
                 aria-pressed={id === props.currentPokerMode}
             >
-                <div className="flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-2 sm:gap-3 sm:flex-column sm:items-start sm:justify-between">
                     <div className="font-bold text-foreground text-base sm:text-lg flex-shrink-0">{name}</div>
                     <div className="flex flex-wrap gap-1 max-w-full">
                         {value.map((v) => (

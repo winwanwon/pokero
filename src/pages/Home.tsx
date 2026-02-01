@@ -92,7 +92,7 @@ const App: React.FC = () => {
       </div>
       <div className="container max-w-6xl mx-auto py-8 px-5 text-center">
         <div className="text-xs text-muted-foreground my-1">
-          Copyright © 2023 Pokero. All rights reserved.
+          Copyright © {new Date().getFullYear()} Pokero. All rights reserved.
         </div>
         <div className="text-xs text-muted-foreground my-1">
           Contribute to this project on <a className="decoration-primary underline text-primary hover:text-primary/80" target="_blank" href="https://github.com/winwanwon/pokero" rel="noreferrer">GitHub</a>
