@@ -31,7 +31,7 @@ Clone the repository and create .env file in the root path
 Run local
 ```
 npm install
-npm start
+npm run dev
 ```
 
 Contributions are welcome!
