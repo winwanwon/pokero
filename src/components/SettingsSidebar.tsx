@@ -28,20 +28,20 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <button
                 key={id}
-                className={`w-full bg-muted rounded-lg p-3 sm:p-6 my-1 text-left border-2 ${
+                className={`w-full bg-muted rounded-lg p-2 sm:p-3 my-0.5 text-left border-2 ${
                     id === props.currentPokerMode ? 'border-primary' : 'border-transparent'
                 } hover:border-primary/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 overflow-hidden`}
                 onClick={onClick}
                 aria-label={`Select ${name} poker mode`}
                 aria-pressed={id === props.currentPokerMode}
             >
-                <div className="flex flex-col gap-2 sm:gap-3 sm:flex-column sm:items-start sm:justify-between">
-                    <div className="font-bold text-foreground text-base sm:text-lg flex-shrink-0">{name}</div>
-                    <div className="flex flex-wrap gap-1 max-w-full">
+                <div className="flex flex-col gap-1.5 sm:gap-2">
+                    <div className="font-semibold text-foreground text-sm sm:text-base flex-shrink-0">{name}</div>
+                    <div className="flex flex-wrap gap-0.5 sm:gap-1 max-w-full">
                         {value.map((v) => (
                             <div
                                 key={v}
-                                className="rounded-full min-w-[24px] h-6 px-2 bg-background text-foreground text-center flex items-center justify-center text-xs font-medium whitespace-nowrap"
+                                className="rounded-full min-w-[20px] h-5 px-1.5 bg-background text-foreground text-center flex items-center justify-center text-xs font-medium whitespace-nowrap"
                             >
                                 {v}
                             </div>
@@ -73,10 +73,10 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
                 aria-labelledby="settings-sidebar-title"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-shrink-0">
-                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <Settings className="text-primary flex-shrink-0" size={20} />
-                        <h2 id="settings-sidebar-title" className="text-lg sm:text-xl font-bold text-foreground truncate">
+                <div className="flex items-center justify-between p-3 sm:p-4 border-b border-border flex-shrink-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                        <Settings className="text-primary flex-shrink-0" size={18} />
+                        <h2 id="settings-sidebar-title" className="text-base sm:text-lg font-bold text-foreground truncate">
                             Room Settings
                         </h2>
                     </div>
@@ -92,11 +92,11 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 sm:p-6 overflow-y-auto overflow-x-hidden h-[calc(100%-64px)] sm:h-[calc(100%-80px)]">
-                    <div className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-foreground">
+                <div className="p-3 sm:p-4 overflow-y-auto overflow-x-hidden h-[calc(100%-56px)] sm:h-[calc(100%-64px)]">
+                    <div className="text-sm sm:text-base font-semibold mb-1.5 sm:mb-2 text-foreground">
                         Poker Mode
                     </div>
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
+                    <p className="text-xs text-muted-foreground mb-2 sm:mb-3">
                         Choose the estimation scale for your planning poker session
                     </p>
                     {PokerModeOptions.map(renderOptions)}
