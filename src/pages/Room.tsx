@@ -63,7 +63,11 @@ const InRoom: React.FC<Props> = (props: Props) => {
     // Request notification permission
     useEffect(() => {
         if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'denied') {
+                    console.log('Notification permission denied');
+                }
+            });
         }
     }, []);
 
@@ -78,8 +82,8 @@ const InRoom: React.FC<Props> = (props: Props) => {
         // Don't notify if already notified this round
         if (hasNotifiedThisRound) return;
 
-        // Don't notify if user hasn't joined yet
-        if (!users[uuid]) return;
+        // Don't notify if user hasn't joined yet or users object is empty
+        if (!users || Object.keys(users).length === 0 || !users[uuid]) return;
 
         const userList = Object.keys(users);
         const totalUsers = userList.length;
@@ -97,16 +101,42 @@ const InRoom: React.FC<Props> = (props: Props) => {
             (key) => users[key].selectedOption === -1
         );
 
+        console.log('Notification check:', {
+            totalUsers,
+            usersWhoHaventVoted: usersWhoHaventVoted.length,
+            currentUser: uuid,
+            isLastOne: usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid,
+            permission: 'Notification' in window ? Notification.permission : 'not supported'
+        });
+
         // Notify if current user is the only one who hasn't voted
         if (usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid) {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Your turn! 🎯', {
-                    body: 'You\'re the last person who hasn\'t voted yet!',
-                    icon: '/pokero-logo-v3.png',
-                    tag: 'poker-vote-reminder',
-                    requireInteraction: false,
-                });
-                setHasNotifiedThisRound(true);
+            if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                    console.log('Sending notification...');
+                    new Notification('Your turn! 🎯', {
+                        body: 'You\'re the last person who hasn\'t voted yet!',
+                        icon: '/pokero-logo-v3.png',
+                        tag: 'poker-vote-reminder',
+                        requireInteraction: false,
+                    });
+                    setHasNotifiedThisRound(true);
+                } else if (Notification.permission === 'default') {
+                    console.log('Requesting notification permission...');
+                    Notification.requestPermission().then((permission) => {
+                        if (permission === 'granted') {
+                            new Notification('Your turn! 🎯', {
+                                body: 'You\'re the last person who hasn\'t voted yet!',
+                                icon: '/pokero-logo-v3.png',
+                                tag: 'poker-vote-reminder',
+                                requireInteraction: false,
+                            });
+                            setHasNotifiedThisRound(true);
+                        }
+                    });
+                } else {
+                    console.log('Notification permission denied');
+                }
             }
         }
     }, [users, uuid, appState, hasNotifiedThisRound]);
