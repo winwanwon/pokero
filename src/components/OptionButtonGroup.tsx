@@ -57,7 +57,7 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
                             variant={isSelected && visibility ? 'default' : 'outline'}
                             onClick={onClick}
                             disabled={!visibility}
-                            className="flex-1 min-h-[44px] min-w-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-base sm:text-sm active:scale-95 transition-transform duration-100"
+                            className="flex-1 min-h-[44px] min-w-[44px] border-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-base sm:text-sm active:scale-95 transition-transform duration-100"
                             aria-label={`Select ${option} points (keyboard shortcut: ${reverseKeyMap[index]})`}
                             aria-pressed={isSelected}
                         >
