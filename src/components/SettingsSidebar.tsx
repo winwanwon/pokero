@@ -28,16 +28,16 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
         return (
             <button
                 key={id}
-                className={`w-full bg-muted rounded-lg p-4 sm:p-6 my-1 text-left border-2 ${
+                className={`w-full bg-muted rounded-lg p-3 sm:p-6 my-1 text-left border-2 ${
                     id === props.currentPokerMode ? 'border-primary' : 'border-transparent'
-                } hover:border-primary/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`}
+                } hover:border-primary/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 overflow-hidden`}
                 onClick={onClick}
                 aria-label={`Select ${name} poker mode`}
                 aria-pressed={id === props.currentPokerMode}
             >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="font-bold text-foreground text-base sm:text-lg">{name}</div>
-                    <div className="flex flex-wrap gap-1">
+                <div className="flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="font-bold text-foreground text-base sm:text-lg flex-shrink-0">{name}</div>
+                    <div className="flex flex-wrap gap-1 max-w-full">
                         {value.map((v) => (
                             <div
                                 key={v}
@@ -65,7 +65,7 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-background shadow-2xl z-50 transform transition-transform duration-300 ease-in-out overflow-hidden ${
+                className={`fixed top-0 right-0 h-full w-full max-w-full sm:w-96 bg-background shadow-2xl z-50 transform transition-transform duration-300 ease-in-out overflow-hidden ${
                     props.open ? 'translate-x-0' : 'translate-x-full'
                 }`}
                 role="dialog"
@@ -92,7 +92,7 @@ const SettingsSidebar: React.FC<OwnProps> = (props: OwnProps) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 sm:p-6 overflow-y-auto h-[calc(100%-64px)] sm:h-[calc(100%-80px)]">
+                <div className="p-4 sm:p-6 overflow-y-auto overflow-x-hidden h-[calc(100%-64px)] sm:h-[calc(100%-80px)]">
                     <div className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-foreground">
                         Poker Mode
                     </div>
