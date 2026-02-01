@@ -80,21 +80,33 @@ const InRoom: React.FC<Props> = (props: Props) => {
         }
 
         // Don't notify if already notified this round
-        if (hasNotifiedThisRound) return;
+        if (hasNotifiedThisRound) {
+            console.log('Already notified this round, skipping');
+            return;
+        }
 
         // Don't notify if user hasn't joined yet or users object is empty
-        if (!users || Object.keys(users).length === 0 || !users[uuid]) return;
+        if (!users || Object.keys(users).length === 0 || !users[uuid]) {
+            console.log('User not joined yet or users empty');
+            return;
+        }
 
         const userList = Object.keys(users);
         const totalUsers = userList.length;
 
         // Need at least 2 people in the room
-        if (totalUsers < 2) return;
+        if (totalUsers < 2) {
+            console.log('Not enough users (need at least 2)');
+            return;
+        }
 
         const currentUserVoted = users[uuid].selectedOption !== -1;
 
         // Don't notify if current user has already voted
-        if (currentUserVoted) return;
+        if (currentUserVoted) {
+            console.log('Current user has already voted');
+            return;
+        }
 
         // Count how many users haven't voted
         const usersWhoHaventVoted = userList.filter(
@@ -103,24 +115,35 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
         const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
 
-        console.log('Notification check:', {
+        console.log('🔔 Notification check (triggered by users change):', {
             totalUsers,
             usersWhoHaventVoted: usersWhoHaventVoted.length,
+            usersWhoHaventVotedList: usersWhoHaventVoted.map(id => users[id]?.name || id),
             currentUser: uuid,
+            currentUserName: users[uuid]?.name,
             isLastOne,
             permission: 'Notification' in window ? Notification.permission : 'not supported',
-            hasNotifiedThisRound
+            hasNotifiedThisRound,
+            timestamp: new Date().toLocaleTimeString()
         });
 
         // Notify if current user is the only one who hasn't voted
         if (isLastOne) {
-            console.log('User is last one! Checking notification support...');
+            console.log('✅ User is last one! Sending notification...');
 
+            // Show in-app toast notification
+            toast({
+                title: "Your turn! 🎯",
+                description: "You're the last person who hasn't voted yet!",
+                duration: 5000,
+            });
+
+            // Try browser notification too
             if ('Notification' in window) {
                 console.log('Notification API supported. Permission:', Notification.permission);
 
                 if (Notification.permission === 'granted') {
-                    console.log('Permission granted. Creating notification...');
+                    console.log('Permission granted. Creating browser notification...');
                     try {
                         const notification = new Notification('Your turn! 🎯', {
                             body: 'You\'re the last person who hasn\'t voted yet!',
@@ -128,10 +151,9 @@ const InRoom: React.FC<Props> = (props: Props) => {
                             tag: 'poker-vote-reminder',
                             requireInteraction: false,
                         });
-                        console.log('Notification created successfully:', notification);
-                        setHasNotifiedThisRound(true);
+                        console.log('Browser notification created successfully:', notification);
                     } catch (error) {
-                        console.error('Error creating notification:', error);
+                        console.error('Error creating browser notification:', error);
                     }
                 } else if (Notification.permission === 'default') {
                     console.log('Requesting notification permission...');
@@ -144,19 +166,20 @@ const InRoom: React.FC<Props> = (props: Props) => {
                                 tag: 'poker-vote-reminder',
                                 requireInteraction: false,
                             });
-                            setHasNotifiedThisRound(true);
                         }
                     });
                 } else {
-                    console.log('Notification permission denied');
+                    console.log('Notification permission denied - only in-app toast will show');
                 }
             } else {
-                console.log('Notification API not supported in this browser');
+                console.log('Notification API not supported - only in-app toast will show');
             }
+
+            setHasNotifiedThisRound(true);
         } else {
-            console.log('User is NOT the last one. Not notifying.');
+            console.log('❌ User is NOT the last one. Not notifying.');
         }
-    }, [users, uuid, appState, hasNotifiedThisRound]);
+    }, [users, uuid, appState, toast]);
 
     useEffect(() => {
         const usersUnsubscribe = onValue(
