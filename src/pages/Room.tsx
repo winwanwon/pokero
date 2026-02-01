@@ -101,29 +101,42 @@ const InRoom: React.FC<Props> = (props: Props) => {
             (key) => users[key].selectedOption === -1
         );
 
+        const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
+
         console.log('Notification check:', {
             totalUsers,
             usersWhoHaventVoted: usersWhoHaventVoted.length,
             currentUser: uuid,
-            isLastOne: usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid,
-            permission: 'Notification' in window ? Notification.permission : 'not supported'
+            isLastOne,
+            permission: 'Notification' in window ? Notification.permission : 'not supported',
+            hasNotifiedThisRound
         });
 
         // Notify if current user is the only one who hasn't voted
-        if (usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid) {
+        if (isLastOne) {
+            console.log('User is last one! Checking notification support...');
+
             if ('Notification' in window) {
+                console.log('Notification API supported. Permission:', Notification.permission);
+
                 if (Notification.permission === 'granted') {
-                    console.log('Sending notification...');
-                    new Notification('Your turn! 🎯', {
-                        body: 'You\'re the last person who hasn\'t voted yet!',
-                        icon: '/pokero-logo-v3.png',
-                        tag: 'poker-vote-reminder',
-                        requireInteraction: false,
-                    });
-                    setHasNotifiedThisRound(true);
+                    console.log('Permission granted. Creating notification...');
+                    try {
+                        const notification = new Notification('Your turn! 🎯', {
+                            body: 'You\'re the last person who hasn\'t voted yet!',
+                            icon: '/pokero-logo-v3.png',
+                            tag: 'poker-vote-reminder',
+                            requireInteraction: false,
+                        });
+                        console.log('Notification created successfully:', notification);
+                        setHasNotifiedThisRound(true);
+                    } catch (error) {
+                        console.error('Error creating notification:', error);
+                    }
                 } else if (Notification.permission === 'default') {
                     console.log('Requesting notification permission...');
                     Notification.requestPermission().then((permission) => {
+                        console.log('Permission response:', permission);
                         if (permission === 'granted') {
                             new Notification('Your turn! 🎯', {
                                 body: 'You\'re the last person who hasn\'t voted yet!',
@@ -137,7 +150,11 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 } else {
                     console.log('Notification permission denied');
                 }
+            } else {
+                console.log('Notification API not supported in this browser');
             }
+        } else {
+            console.log('User is NOT the last one. Not notifying.');
         }
     }, [users, uuid, appState, hasNotifiedThisRound]);
 
