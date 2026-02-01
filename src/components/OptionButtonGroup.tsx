@@ -29,20 +29,29 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
     const { pokerMode, selectedOption, setSelectedOption, appState, onOptionSelect, visibility, setVisibility, enableExtraFn, handleExtraFn } = props;
     const options = PokerModeOptions.find(p => p.id === pokerMode)?.value || [0, 1, 2, 3, 5, 8, 13];
 
-    React.useEffect(() => {
-        document.body.addEventListener('keydown', (event) => {
-            if (event.repeat) return;
-            if (event.key in keyMap) {
-                selectOption(options[keyMap[event.key]]);
-            }
-        });
-    }, []);
-
     const selectOption = (option: number | string) => {
         const opt = option === selectedOption ? -1 : option;
         setSelectedOption(opt);
         onOptionSelect(opt);
     };
+
+    React.useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.repeat) return;
+            if (event.key in keyMap) {
+                const optionIndex = keyMap[event.key];
+                if (optionIndex < options.length) {
+                    selectOption(options[optionIndex]);
+                }
+            }
+        };
+
+        document.body.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.body.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [options, selectedOption]);
 
     const renderOptions = options.map((option, index) => {
         const onClick = () => {
