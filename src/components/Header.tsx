@@ -9,7 +9,7 @@ interface Props {
 const Header: React.FC<Props> = (props: Props) => {
     const [top, setTop] = useState(true);
 
-    // detect whether user has scrolled the page down by 10px 
+    // Detect whether user has scrolled the page down by 10px 
     useEffect(() => {
         const scrollHandler = () => {
             window.pageYOffset > 10 ? setTop(false) : setTop(true)

@@ -79,12 +79,12 @@ const App: React.FC = () => {
           />
           <FeatureBox
             title="Statistics provided"
-            content="We provide you with statistics about your team's estimations, including average and majority picks."
+            content="View statistics about your team's estimations, including average and majority picks."
             icon={<BarChart3 className="text-background" size={36} />}
           />
           <FeatureBox
             title="Facilitator mode"
-            content="Sharing your screen? POKERO allows you to split your options to another window and hide them from your teammates"
+            content="Sharing your screen? Pokero allows you to open your options in another window and hide them from your teammates."
             chipVariant="secondary"
             icon={<EyeOff className="text-background" size={36} />}
           />

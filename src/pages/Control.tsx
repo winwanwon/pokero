@@ -69,7 +69,7 @@ const Control: React.FC<Props> = (props: Props) => {
     const renderWaitMessage = () => {
         return (
             <p className="text-center">
-                Options will be available once the points get reset.
+                Options will be available after the votes are reset.
             </p>
         )
     }

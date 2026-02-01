@@ -47,7 +47,6 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const [visibility, setVisibility] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [connectionError, setConnectionError] = useState(false);
-    const [hasNotifiedThisRound, setHasNotifiedThisRound] = useState(false);
 
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
@@ -63,123 +62,50 @@ const InRoom: React.FC<Props> = (props: Props) => {
     // Request notification permission
     useEffect(() => {
         if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission().then((permission) => {
-                if (permission === 'denied') {
-                    console.log('Notification permission denied');
-                }
-            });
+            Notification.requestPermission();
         }
     }, []);
 
     // Notify when user is last person who hasn't voted
     useEffect(() => {
-        // Only check during voting (Init state)
         if (appState !== AppState.Init) {
-            setHasNotifiedThisRound(false);
             return;
         }
 
-        // Don't notify if already notified this round
-        if (hasNotifiedThisRound) {
-            console.log('Already notified this round, skipping');
-            return;
-        }
-
-        // Don't notify if user hasn't joined yet or users object is empty
         if (!users || Object.keys(users).length === 0 || !users[uuid]) {
-            console.log('User not joined yet or users empty');
             return;
         }
 
         const userList = Object.keys(users);
         const totalUsers = userList.length;
 
-        // Need at least 2 people in the room
         if (totalUsers < 2) {
-            console.log('Not enough users (need at least 2)');
             return;
         }
 
         const currentUserVoted = users[uuid].selectedOption !== -1;
 
-        // Don't notify if current user has already voted
         if (currentUserVoted) {
-            console.log('Current user has already voted');
             return;
         }
 
-        // Count how many users haven't voted
         const usersWhoHaventVoted = userList.filter(
             (key) => users[key].selectedOption === -1
         );
 
         const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
 
-        console.log('🔔 Notification check (triggered by users change):', {
-            totalUsers,
-            usersWhoHaventVoted: usersWhoHaventVoted.length,
-            usersWhoHaventVotedList: usersWhoHaventVoted.map(id => users[id]?.name || id),
-            currentUser: uuid,
-            currentUserName: users[uuid]?.name,
-            isLastOne,
-            permission: 'Notification' in window ? Notification.permission : 'not supported',
-            hasNotifiedThisRound,
-            timestamp: new Date().toLocaleTimeString()
-        });
-
-        // Notify if current user is the only one who hasn't voted
-        if (isLastOne) {
-            console.log('✅ User is last one! Sending notification...');
-
-            // Show in-app toast notification
-            toast({
-                title: "Your turn! 🎯",
-                description: "You're the last person who hasn't voted yet!",
-                duration: 5000,
+        if (isLastOne && 'Notification' in window && Notification.permission === 'granted') {
+            const notification = new Notification('Your turn! 🎯', {
+                body: 'You\'re the last person who hasn\'t voted yet.',
             });
 
-            // Try browser notification too
-            if ('Notification' in window) {
-                console.log('Notification API supported. Permission:', Notification.permission);
-
-                if (Notification.permission === 'granted') {
-                    console.log('Permission granted. Creating browser notification...');
-                    try {
-                        const notification = new Notification('Your turn! 🎯', {
-                            body: 'You\'re the last person who hasn\'t voted yet!',
-                            icon: '/pokero-logo-v3.png',
-                            tag: 'poker-vote-reminder',
-                            requireInteraction: false,
-                        });
-                        console.log('Browser notification created successfully:', notification);
-                    } catch (error) {
-                        console.error('Error creating browser notification:', error);
-                    }
-                } else if (Notification.permission === 'default') {
-                    console.log('Requesting notification permission...');
-                    Notification.requestPermission().then((permission) => {
-                        console.log('Permission response:', permission);
-                        if (permission === 'granted') {
-                            new Notification('Your turn! 🎯', {
-                                body: 'You\'re the last person who hasn\'t voted yet!',
-                                icon: '/pokero-logo-v3.png',
-                                tag: 'poker-vote-reminder',
-                                requireInteraction: false,
-                            });
-                        }
-                    });
-                } else {
-                    console.log('Notification permission denied - only in-app toast will show');
-                }
-            } else {
-                console.log('Notification API not supported - only in-app toast will show');
-            }
-
-            setHasNotifiedThisRound(true);
-        } else {
-            console.log('❌ User is NOT the last one. Not notifying.');
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
         }
-    }, [users, uuid, appState, toast]);
+    }, [users, uuid, appState]);
 
     useEffect(() => {
         const usersUnsubscribe = onValue(
