@@ -14,7 +14,6 @@ interface OwnProps {
 
 const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     const { appState, uuid, users, onRemove } = props;
-    const userCount = Object.keys(users).length;
 
     const renderAttendees = Object.keys(users).map((key) => {
         const selected = users[key].selectedOption !== -1;
