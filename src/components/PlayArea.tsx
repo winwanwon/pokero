@@ -1,8 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import DoneIcon from '@mui/icons-material/Done';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Check, X } from 'lucide-react';
 
 import { UserDatabase } from '../types';
 import { AppState } from '../enum';
@@ -28,66 +25,78 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
             onRemove(key)
         }
 
-        const nonSelectedCardStyles = "border-slate-500";
-        const selectedCardStyles = "border-teal-400 shadow-teal-500/40";
-        const circleBorderStyles = "hidden md:flex w-16 h-16 py-3 border-2 rounded-full justify-center items-center";
+        const nonSelectedCardStyles = "border-border";
+        const selectedCardStyles = "border-primary shadow-primary/40";
+        const circleBorderStyles = "flex w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 border-2 rounded-full justify-center items-center";
 
         const renderStatusMarker = () => {
             if (!selected) {
                 return (
-                    <>
-                        <div className={`md:hidden w-2 h-2 rounded-full mx-4 animate-pulse bg-slate-500`} />
-                        <div className={`${circleBorderStyles} border-slate-500 animate-pulse`}>
-                            <QuestionMarkIcon color="secondary" sx={{ fontSize: 44 }} />
-                        </div>
-                    </>
+                    <div className={`${circleBorderStyles} border-border animate-pulse`} aria-label="Waiting for selection">
+                        <span className="text-xl sm:text-2xl md:text-3xl font-black text-muted-foreground">
+                            ?
+                        </span>
+                    </div>
                 );
             }
             return (
-                <>
-                    <div className="md:hidden w-2 h-2 ml-3 mr-5 flex items-center">
-                        <DoneIcon color="primary" sx={{ fontSize: 22 }} />
-                    </div>
-                    <div className={`${circleBorderStyles} border-teal-500`}>
-                        <DoneIcon color="primary" sx={{ fontSize: 44 }} />
-                    </div>
-                </>
+                <div className={`${circleBorderStyles} border-primary`} aria-label="Selection confirmed">
+                    <Check className="text-primary" size={32} aria-hidden="true" />
+                </div>
             );
         }
 
         const renderPoint = () => {
             return (
-                <div className="w-10 h-2 md:w-16 md:h-16 flex justify-center items-center text-2xl md:text-3xl ƒont-black text-teal-600 text-center">
-                    <div className="md:hidden">
+                <div className={`${circleBorderStyles} border-primary`}>
+                    <span className="text-xl sm:text-2xl md:text-3xl font-black text-primary">
                         {selected ? users[key].selectedOption : "-"}
-                    </div>
-                    <div className={`${circleBorderStyles} border-teal-500`}>
-                        {selected ? users[key].selectedOption : "-"}
-                    </div>
+                    </span>
                 </div>
             );
         }
 
+        const playerStatus = isRevealed
+            ? `Voted ${users[key].selectedOption}`
+            : (selected ? 'Vote submitted' : 'Waiting to vote');
+
         return (
-            <div key={key} className={`h-12 md:h-32 md:w-28 md:py-3 border rounded-lg shadow-md bg-white flex md:flex-col md:justify-between items-center ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}>
+            <div
+                key={key}
+                className={`relative h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-card flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
+                role="article"
+                aria-label={`${users[key].name}: ${playerStatus}`}
+            >
+                {props.showDeleteButton && key !== uuid && (
+                    <button
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 flex items-center justify-center shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 z-10"
+                        onClick={removePlayer}
+                        aria-label={`Remove ${users[key].name} from room`}
+                    >
+                        <X size={14} aria-hidden="true" />
+                    </button>
+                )}
                 {isRevealed ? renderPoint() : renderStatusMarker()}
-                <div className={`text-slate-900 text-sm ${key === uuid ? 'font-bold' : ''}`}>
-                    {users[key].name}
-                    {props.showDeleteButton && key !== uuid && <button className="text-red-500" onClick={removePlayer}><ClearIcon sx={{ fontSize: 16 }} /></button>}
+                <div className={`text-card-foreground text-xs sm:text-sm text-center px-1 ${key === uuid ? 'font-bold' : ''}`}>
+                    <div className="truncate max-w-full">{users[key].name}</div>
                 </div>
             </div>
         );
     });
 
+    const getGridClass = () => {
+        // Mobile: 2-3 columns, Desktop: up to 6 columns in a row
+        if (userCount === 1) return 'grid-cols-1';
+        if (userCount === 2) return 'grid-cols-2 md:grid-cols-2';
+        if (userCount <= 6) return 'grid-cols-3 md:grid-cols-6';
+        // 7+ players: 3 columns on mobile, 6 on desktop (creates multiple rows)
+        return 'grid-cols-3 md:grid-cols-6';
+    };
+
     return (
-        <>
-            <div className={`md:hidden w-5/6 md:w-auto grid grid-cols-1 gap-2`}>
-                {renderAttendees}
-            </div>
-            <Box className="hidden md:grid" gridTemplateColumns={`repeat(${userCount <= 6 ? userCount : Math.ceil(userCount / 2)}, ${userCount <= 6 ? 1 : 2}fr)`} gap={1} >
-                {renderAttendees}
-            </Box>
-        </>
+        <div className={`grid gap-2 sm:gap-3 md:gap-4 ${getGridClass()}`}>
+            {renderAttendees}
+        </div>
     );
 
 }

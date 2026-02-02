@@ -1,5 +1,4 @@
 import React from 'react';
-import { AppBar, Container, Toolbar, Box } from '@mui/material';
 
 interface Props {
     backgroundColor?: string;
@@ -10,18 +9,21 @@ const NavBar: React.FC<Props> = (props) => {
     const { render, backgroundColor } = props;
 
     return (
-        <AppBar position="absolute" sx={{ backgroundColor: backgroundColor || 'background.paper', boxShadow: 'none' }}>
-            <Container>
-                <Toolbar disableGutters>
-                    <Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
-                        <a href="/">
-                            <img src="/pokero-logo-v2.png" alt="POKERO" height="32" />
+        <header
+            className="absolute top-0 left-0 right-0 shadow-none z-10"
+            style={{ backgroundColor: backgroundColor || 'var(--background)' }}
+        >
+            <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+                <div className="flex items-center py-3 sm:py-4">
+                    <div className="flex w-full justify-between items-center">
+                        <a href="/" className="flex items-center">
+                            <img src="/pokero-logo-v2.png" alt="POKERO" className="h-7 sm:h-8" />
                         </a>
-                    </Box>
+                    </div>
                     {render}
-                </Toolbar>
-            </Container>
-        </AppBar>
+                </div>
+            </div>
+        </header>
     );
 };
 

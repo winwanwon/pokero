@@ -1,7 +1,10 @@
 import React from "react";
-import { Modal } from "@mui/material";
-import { Container } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 import { PokerMode } from "../enum";
 import { PokerModeOptions } from "../constants/pokerMode";
@@ -48,30 +51,19 @@ const SettingsModal: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return (
-        <Container maxWidth="xs" >
-            <Modal
-                open={props.open}
-                onClose={props.onClose}
-                onBackdropClick={props.onClose}
-            >
-                <div className="w-full h-full flex justify-center items-center">
-                    <div className="bg-slate-50 w-4/5 max-w-xl rounded-lg p-8">
-                        <div className="flex justify-between items-center mb-4">
-                            <div className="font-bold text-2xl">
-                                Room Settings
-                            </div>
-                            <button onClick={props.onClose}>
-                                <CloseIcon />
-                            </button>
-                        </div>
-                        <div className="text-xl mb-2">
-                            Poker Mode
-                        </div>
-                        {PokerModeOptions.map(renderOptions)}
+        <Dialog open={props.open} onOpenChange={props.onClose}>
+            <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                    <DialogTitle>Room Settings</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
+                    <div className="text-lg font-semibold mb-3">
+                        Poker Mode
                     </div>
+                    {PokerModeOptions.map(renderOptions)}
                 </div>
-            </Modal>
-        </Container>
+            </DialogContent>
+        </Dialog>
     );
 }
 

@@ -4,11 +4,13 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
-import { Snackbar, Stack } from "@mui/material";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 import { AppState, PokerMode } from "../enum";
 import { User, UserDatabase } from "../types";
 import { getAverageFromResult, getModeFromResult, isValidRoomName, isValidUserName } from "../utils";
+import { useNotification } from "../contexts/NotificationContext";
 
 import PopUpModal from "../components/PopUpModal";
 import OptionButtonGroup from "../components/OptionButtonGroup";
@@ -17,7 +19,9 @@ import PlayArea from "../components/PlayArea";
 import Result from "../components/Result";
 import RoomDetail from "../components/RoomDetail";
 import Header from "../components/Header";
-import SettingsModal from "../components/SettingsModal";
+import SettingsSidebar from "../components/SettingsSidebar";
+import OfflineIndicator from "../components/OfflineIndicator";
+import LoadingSkeleton from "../components/LoadingSkeleton";
 
 interface Props {
     firebaseApp: FirebaseApp;
@@ -29,19 +33,22 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const database = getDatabase(app);
     const uuid = window.localStorage.getItem("uuid") || uuidv4();
     window.localStorage.setItem("uuid", uuid);
+    const { toast } = useToast();
+    const { notificationsEnabled } = useNotification();
 
     const params = useParams();
     const roomName = params.roomName?.toLowerCase() || "";
     const [name, setName] = useState(window.localStorage.getItem("name") || "");
     const [modalOpen, setModalOpen] = useState(true);
     const [settingsOpen, setSettingsOpen] = useState(false);
-    const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [appState, setAppState] = useState<AppState>(AppState.Init);
     const [pokerMode, setPokerMode] = useState<PokerMode>(PokerMode.Fibonacci);
     const [selectedOption, setSelectedOption] = useState<number | string>(-1);
     const [users, setUsers] = useState<UserDatabase>({});
     const [sudoMode, setSudoMode] = useState<boolean>(false);
     const [visibility, setVisibility] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [connectionError, setConnectionError] = useState(false);
 
     const usersDbPath = roomName + '/users/';
     const stateDbPath = roomName + '/state/';
@@ -54,43 +61,125 @@ const InRoom: React.FC<Props> = (props: Props) => {
         }
     }, [roomName, navigate]);
 
+    // Request notification permission
     useEffect(() => {
-        onValue(ref(database, usersDbPath), (snapshot) => {
-            const dbSnap = snapshot.val();
-            if (snapshot.size) {
-                setUsers(dbSnap);
-                !dbSnap[uuid] && setModalOpen(true);
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    }, []);
+
+    // Notify when user is last person who hasn't voted
+    useEffect(() => {
+        if (appState !== AppState.Init) {
+            return;
+        }
+
+        if (!users || Object.keys(users).length === 0 || !users[uuid]) {
+            return;
+        }
+
+        const userList = Object.keys(users);
+        const totalUsers = userList.length;
+
+        if (totalUsers < 2) {
+            return;
+        }
+
+        const currentUserVoted = users[uuid].selectedOption !== -1;
+
+        if (currentUserVoted) {
+            return;
+        }
+
+        const usersWhoHaventVoted = userList.filter(
+            (key) => users[key].selectedOption === -1
+        );
+
+        const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
+
+        if (isLastOne && notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+            const notification = new Notification('Your turn! 🎯', {
+                body: 'You\'re the last person who hasn\'t voted yet.',
+            });
+
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        }
+    }, [users, uuid, appState, notificationsEnabled]);
+
+    useEffect(() => {
+        const usersUnsubscribe = onValue(
+            ref(database, usersDbPath),
+            (snapshot) => {
+                const dbSnap = snapshot.val();
+                if (snapshot.size) {
+                    setUsers(dbSnap);
+                    !dbSnap[uuid] && setModalOpen(true);
+                }
+                setIsLoading(false);
+                setConnectionError(false);
+            },
+            (error) => {
+                console.error('Error loading users:', error);
+                setConnectionError(true);
+                setIsLoading(false);
             }
-        });
+        );
 
-        onValue(ref(database, stateDbPath), (snapshot) => {
-            const dbSnap = snapshot.val();
-            if (dbSnap) {
-                setAppState(dbSnap.currentState);
-                setPokerMode(dbSnap.pokerMode);
-                dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
+        const stateUnsubscribe = onValue(
+            ref(database, stateDbPath),
+            (snapshot) => {
+                const dbSnap = snapshot.val();
+                if (dbSnap) {
+                    setAppState(dbSnap.currentState);
+                    setPokerMode(dbSnap.pokerMode);
+                    dbSnap.currentState === AppState.Revealed && setSelectedOption(-1);
+                }
+            },
+            (error) => {
+                console.error('Error loading state:', error);
+                setConnectionError(true);
             }
-        });
+        );
 
-        onValue(ref(database, thisUserDbPath), (snapshot) => {
-            const dbSnap = snapshot.val();
-            setSelectedOption(dbSnap?.selectedOption);
-        });
+        const userUnsubscribe = onValue(
+            ref(database, thisUserDbPath),
+            (snapshot) => {
+                const dbSnap = snapshot.val();
+                setSelectedOption(dbSnap?.selectedOption);
+            }
+        );
 
-        get(ref(database, stateDbPath)).then((snapshot) => {
-            if (!snapshot.exists()) {
-                set(ref(database, stateDbPath), {
-                    currentState: AppState.Init,
-                    pokerMode: PokerMode.Fibonacci,
+        get(ref(database, stateDbPath))
+            .then((snapshot) => {
+                if (!snapshot.exists()) {
+                    return set(ref(database, stateDbPath), {
+                        currentState: AppState.Init,
+                        pokerMode: PokerMode.Fibonacci,
+                    });
+                } else {
+                    setAppState(snapshot.val().currentState);
+                    setPokerMode(snapshot.val().pokerMode);
+                }
+            })
+            .catch((error) => {
+                console.error('Error initializing state:', error);
+                setConnectionError(true);
+                toast({
+                    title: "Connection Error",
+                    description: "Failed to connect to Firebase. Please try again.",
+                    variant: "destructive",
                 });
-            } else {
-                setAppState(snapshot.val().currentState);
-                setPokerMode(snapshot.val().pokerMode);
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-    }, [database, pokerMode, stateDbPath, thisUserDbPath, usersDbPath, uuid]);
+            });
+
+        return () => {
+            usersUnsubscribe();
+            stateUnsubscribe();
+            userUnsubscribe();
+        };
+    }, [database, stateDbPath, thisUserDbPath, usersDbPath, uuid, toast]);
 
     const onOptionSelect = (option: number | string) => {
         update(ref(database, thisUserDbPath), {
@@ -211,42 +300,76 @@ const InRoom: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const content = (
-        <div className="flex flex-col h-full w-full justify-between items-center">
-            <div />
-            <PlayArea
-                appState={appState}
-                uuid={uuid}
-                users={users}
-                showDeleteButton={sudoMode}
-                onRemove={onRemove}
-            />
-            <Stack
-                spacing={1}
-                minWidth={420}
-            >
-                {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
-                {appState === AppState.Init && optionButtons}
-                {/* {appState === AppState.Init && selectedUserDisplay} */}
-                <CommandButton
-                    content={getButtonContent()}
-                    color={getButtonColor()}
-                    onClick={onButtonClick}
-                    resetAppState={resetAppState}
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <div className="flex flex-col h-full w-full justify-between items-center px-4 sm:px-0">
+                    <div />
+                    <LoadingSkeleton count={3} />
+                    <div className="flex flex-col gap-2 w-full sm:min-w-[420px] max-w-2xl">
+                        <div className="h-12 bg-slate-200 rounded animate-pulse" />
+                    </div>
+                </div>
+            );
+        }
+
+        if (connectionError) {
+            return (
+                <div className="flex flex-col h-full w-full justify-center items-center px-4">
+                    <div className="text-center max-w-md">
+                        <p className="text-lg font-semibold mb-2">Connection Error</p>
+                        <p className="text-sm text-slate-600 mb-4">
+                            Unable to connect to the server. Please check your internet connection.
+                        </p>
+                        <CommandButton
+                            content="Retry Connection"
+                            color="primary"
+                            onClick={() => window.location.reload()}
+                            resetAppState={resetAppState}
+                        />
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="flex flex-col h-full w-full justify-between items-center px-4 sm:px-0">
+                <div />
+                <PlayArea
+                    appState={appState}
+                    uuid={uuid}
+                    users={users}
+                    showDeleteButton={sudoMode}
+                    onRemove={onRemove}
                 />
-            </Stack>
-        </div>
-    );
+                <div className="flex flex-col gap-2 w-full sm:min-w-[420px] max-w-2xl">
+                    {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
+                    {appState === AppState.Init && optionButtons}
+                    {/* {appState === AppState.Init && selectedUserDisplay} */}
+                    <CommandButton
+                        content={getButtonContent()}
+                        color={getButtonColor()}
+                        onClick={onButtonClick}
+                        resetAppState={resetAppState}
+                    />
+                </div>
+            </div>
+        );
+    };
 
     return (
         <>
+            <OfflineIndicator />
             <Header
                 render={
                     <RoomDetail
                         roomName={roomName}
                         onUrlCopied={() => {
                             logEvent(analytics, 'share');
-                            setSnackBarOpen(true);
+                            toast({
+                                title: "Room URL copied!",
+                                duration: 2000,
+                            });
                         }}
                         onOpenSettings={
                             () => setSettingsOpen(true)
@@ -254,9 +377,9 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     />
                 }
             />
-            <div className="w-full max-w-none h-screen bg-slate-50 pt-20">
+            <div className="w-full max-w-none h-screen bg-background pt-20">
                 <div className="container mx-auto flex h-full pb-12">
-                    {!modalOpen && content}
+                    {!modalOpen && renderContent()}
                 </div>
                 <PopUpModal
                     title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
@@ -267,20 +390,14 @@ const InRoom: React.FC<Props> = (props: Props) => {
                     onSubmit={onSubmitName}
                     onInputChange={(e) => isValidUserName(e.target.value) && setName(e.target.value)}
                 />
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    open={snackBarOpen}
-                    autoHideDuration={2000}
-                    onClose={() => setSnackBarOpen(false)}
-                    message="Room URL copied!"
-                />
-                <SettingsModal
+                <SettingsSidebar
                     open={settingsOpen}
                     onClose={() => setSettingsOpen(false)}
                     currentPokerMode={pokerMode}
                     onPokerModeSelect={onPokerModeSelect}
                 />
             </div>
+            <Toaster />
         </>
     );
 }

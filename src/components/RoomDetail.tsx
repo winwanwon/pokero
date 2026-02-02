@@ -1,8 +1,6 @@
 import React from 'react'
-import TagIcon from '@mui/icons-material/Tag';
-import ShareIcon from '@mui/icons-material/Share';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Hash, Share2, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface OwnProps {
     roomName: string;
@@ -23,24 +21,39 @@ const RoomDetail: React.FC<OwnProps> = (props) => {
     };
 
     return (
-        <Box display="flex" alignItems="center">
-            <Box display="flex" alignItems="center" mr={1}>
-                <TagIcon />
-                <Typography variant="h6" sx={{ whiteSpace: 'nowrap' }}>
+        <div className="flex items-center gap-1">
+            <div className="flex items-center mr-1 sm:mr-2">
+                <Hash className="text-foreground hidden sm:block" size={24} aria-hidden="true" />
+                <Hash className="text-foreground sm:hidden" size={20} aria-hidden="true" />
+                <h6 className="text-base sm:text-xl font-semibold whitespace-nowrap truncate max-w-[120px] sm:max-w-none">
                     {roomName}
-                </Typography>
-            </Box>
-            <Box >
-                <IconButton sx={{ color: 'primary.main' }} onClick={copyUrl}>
-                    <ShareIcon />
-                </IconButton>
-            </Box>
-            <Box>
-                <IconButton sx={{ color: 'primary.main' }} onClick={onOpenSettings}>
-                    <SettingsIcon />
-                </IconButton>
-            </Box>
-        </Box>
+                </h6>
+            </div>
+            <div>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px] min-w-[44px]"
+                    onClick={copyUrl}
+                    aria-label="Share room URL"
+                >
+                    <Share2 className="hidden sm:block" size={20} />
+                    <Share2 className="sm:hidden" size={18} />
+                </Button>
+            </div>
+            <div>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-h-[44px] min-w-[44px]"
+                    onClick={onOpenSettings}
+                    aria-label="Open room settings"
+                >
+                    <Settings className="hidden sm:block" size={20} />
+                    <Settings className="sm:hidden" size={18} />
+                </Button>
+            </div>
+        </div>
     );
 }
 

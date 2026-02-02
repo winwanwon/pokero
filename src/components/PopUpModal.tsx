@@ -1,6 +1,13 @@
 import React from "react";
-import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
-import { Container } from "@mui/material";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface OwnProps {
     title: string;
@@ -13,19 +20,6 @@ interface OwnProps {
     setValue?: (s: string) => void;
 }
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%',
-    maxWidth: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
 const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
     const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -34,23 +28,40 @@ const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
     };
 
     return (
-        <Container maxWidth="xs">
-            <Modal
-                open={props.open}
-                onClose={props.onClose}
-                onBackdropClick={props.onClose}
+        <Dialog open={props.open} modal>
+            <DialogContent
+                className="sm:max-w-[425px]"
+                hideCloseButton
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
             >
-                <Box sx={style}>
-                    <Stack spacing={2} justifyContent={'center'}>
-                        <Typography variant="h5" gutterBottom component="div">
-                            {props.title}
-                        </Typography>
-                        <TextField label={props.label} variant="filled" onChange={props.onInputChange} onKeyPress={onKeyPress} value={props.value} autoFocus={true} />
-                        <Button variant="contained" onClick={props.onSubmit} disabled={!props.value}>Enter</Button>
-                    </Stack>
-                </Box>
-            </Modal>
-        </Container>
+                <DialogHeader>
+                    <DialogTitle>{props.title}</DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col gap-4 py-4">
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="modal-input">{props.label}</Label>
+                        <Input
+                            id="modal-input"
+                            onChange={props.onInputChange}
+                            onKeyDown={onKeyPress}
+                            value={props.value}
+                            autoFocus={true}
+                            aria-required="true"
+                            placeholder={`Enter your ${props.label.toLowerCase()}`}
+                            className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        />
+                    </div>
+                    <Button
+                        onClick={props.onSubmit}
+                        disabled={!props.value}
+                        className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    >
+                        Enter
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }
 
