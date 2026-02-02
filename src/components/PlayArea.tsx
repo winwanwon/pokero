@@ -14,7 +14,6 @@ interface OwnProps {
 
 const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
     const { appState, uuid, users, onRemove } = props;
-    const userCount = Object.keys(users).length;
 
     const renderAttendees = Object.keys(users).map((key) => {
         const selected = users[key].selectedOption !== -1;
@@ -84,17 +83,8 @@ const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
         );
     });
 
-    const getGridClass = () => {
-        // Mobile: 2-3 columns, Desktop: up to 6 columns in a row
-        if (userCount === 1) return 'grid-cols-1';
-        if (userCount === 2) return 'grid-cols-2 md:grid-cols-2';
-        if (userCount <= 6) return 'grid-cols-3 md:grid-cols-6';
-        // 7+ players: 3 columns on mobile, 6 on desktop (creates multiple rows)
-        return 'grid-cols-3 md:grid-cols-6';
-    };
-
     return (
-        <div className={`grid gap-2 sm:gap-3 md:gap-4 ${getGridClass()}`}>
+        <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center">
             {renderAttendees}
         </div>
     );
