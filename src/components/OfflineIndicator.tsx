@@ -21,11 +21,11 @@ const OfflineIndicator: React.FC = () => {
   if (isOnline) return null;
 
   return (
-    <div className="fixed top-16 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:w-96">
-      <Alert variant="destructive" className="shadow-lg">
+    <div className="fixed top-[68px] left-4 right-4 z-50 sm:left-auto sm:right-4 sm:w-96">
+      <Alert className="border-destructive bg-card shadow-lg [&>svg]:text-destructive">
         <WifiOff className="h-4 w-4" />
         <AlertDescription>
-          You're offline. Some features may not work.
+          You're offline. Changes may not sync until you reconnect.
         </AlertDescription>
       </Alert>
     </div>

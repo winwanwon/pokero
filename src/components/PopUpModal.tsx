@@ -57,7 +57,7 @@ const PopUpModal: React.FC<OwnProps> = (props: OwnProps) => {
                         disabled={!props.value}
                         className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
-                        Enter
+                        Join room
                     </Button>
                 </div>
             </DialogContent>

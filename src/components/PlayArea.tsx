@@ -3,6 +3,7 @@ import { Check, X } from 'lucide-react';
 
 import { UserDatabase } from '../types';
 import { AppState } from '../enum';
+import { PokerOption } from '../utils';
 
 interface OwnProps {
     appState: AppState;
@@ -10,85 +11,67 @@ interface OwnProps {
     uuid: string;
     showDeleteButton: boolean;
     onRemove: (uuid: string) => void;
+    majorityOptions: PokerOption[];
 }
 
 const PlayArea: React.FC<OwnProps> = (props: OwnProps) => {
-    const { appState, uuid, users, onRemove } = props;
-
-    const renderAttendees = Object.keys(users).map((key) => {
-        const selected = users[key].selectedOption !== -1;
-        const isRevealed = appState === AppState.Revealed;
-        const confirmedValue = selected || isRevealed;
-
-        const removePlayer = () => {
-            onRemove(key)
-        }
-
-        const nonSelectedCardStyles = "border-border";
-        const selectedCardStyles = "border-primary shadow-primary/40";
-        const circleBorderStyles = "flex w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 border-2 rounded-full justify-center items-center";
-
-        const renderStatusMarker = () => {
-            if (!selected) {
-                return (
-                    <div className={`${circleBorderStyles} border-border animate-pulse`} aria-label="Waiting for selection">
-                        <span className="text-xl sm:text-2xl md:text-3xl font-black text-muted-foreground">
-                            ?
-                        </span>
-                    </div>
-                );
-            }
-            return (
-                <div className={`${circleBorderStyles} border-primary`} aria-label="Selection confirmed">
-                    <Check className="text-primary" size={32} aria-hidden="true" />
-                </div>
-            );
-        }
-
-        const renderPoint = () => {
-            return (
-                <div className={`${circleBorderStyles} border-primary`}>
-                    <span className="text-xl sm:text-2xl md:text-3xl font-black text-primary">
-                        {selected ? users[key].selectedOption : "-"}
-                    </span>
-                </div>
-            );
-        }
-
-        const playerStatus = isRevealed
-            ? `Voted ${users[key].selectedOption}`
-            : (selected ? 'Vote submitted' : 'Waiting to vote');
-
-        return (
-            <div
-                key={key}
-                className={`relative h-28 w-24 sm:h-32 sm:w-28 py-3 border rounded-lg shadow-md bg-card flex flex-col justify-between items-center transition-all duration-300 ${confirmedValue ? selectedCardStyles : nonSelectedCardStyles}`}
-                role="article"
-                aria-label={`${users[key].name}: ${playerStatus}`}
-            >
-                {props.showDeleteButton && key !== uuid && (
-                    <button
-                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 flex items-center justify-center shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 z-10"
-                        onClick={removePlayer}
-                        aria-label={`Remove ${users[key].name} from room`}
-                    >
-                        <X size={14} aria-hidden="true" />
-                    </button>
-                )}
-                {isRevealed ? renderPoint() : renderStatusMarker()}
-                <div className={`text-card-foreground text-xs sm:text-sm text-center px-1 ${key === uuid ? 'font-bold' : ''}`}>
-                    <div className="truncate max-w-full">{users[key].name}</div>
-                </div>
-            </div>
-        );
-    });
+    const { appState, uuid, users, onRemove, majorityOptions, showDeleteButton } = props;
+    const isRevealed = appState === AppState.Revealed;
 
     return (
-        <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center">
-            {renderAttendees}
+        <div className="m-auto flex flex-wrap justify-center gap-x-2.5 gap-y-3.5 sm:gap-x-5 sm:gap-y-4">
+            {Object.keys(users).map((key) => {
+                const { name, selectedOption } = users[key];
+                const selected = selectedOption !== -1;
+                const isMajority = isRevealed && selected && majorityOptions.includes(selectedOption);
+
+                const playerStatus = isRevealed
+                    ? (selected ? `Voted ${selectedOption}` : 'No vote')
+                    : (selected ? 'Vote submitted' : 'Waiting to vote');
+
+                const cardStyles = () => {
+                    if (!selected) return 'border-dashed border-muted-foreground text-muted-foreground';
+                    if (isMajority) return 'border-primary bg-primary text-primary-foreground';
+                    if (isRevealed) return 'border-input bg-card text-card-foreground';
+                    return 'border-secondary bg-secondary text-secondary-foreground';
+                };
+
+                const renderFace = () => {
+                    if (isRevealed) return selected ? selectedOption : '-';
+                    return selected
+                        ? <Check className="h-7 w-7 sm:h-10 sm:w-10" aria-hidden="true" />
+                        : <span className="animate-pulse">?</span>;
+                };
+
+                return (
+                    <div
+                        key={key}
+                        className="relative flex w-[78px] flex-col items-center gap-1.5 sm:w-[132px] sm:gap-2"
+                        role="article"
+                        aria-label={`${name}: ${playerStatus}`}
+                    >
+                        <div
+                            className={`flex aspect-[5/7] w-full items-center justify-center rounded-lg border-2 font-mono font-semibold transition-colors duration-300 sm:rounded-[10px] ${String(selectedOption).length > 2 && isRevealed ? 'text-xl sm:text-[34px]' : 'text-[28px] sm:text-[46px]'} ${cardStyles()}`}
+                        >
+                            {renderFace()}
+                        </div>
+                        <div className={`max-w-full truncate text-[13px] sm:text-[15px] ${key === uuid ? 'font-bold' : 'font-medium'}`}>
+                            {name}
+                        </div>
+                        {showDeleteButton && key !== uuid && (
+                            <button
+                                className="absolute -right-2 -top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg transition-all duration-200 hover:bg-destructive/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2"
+                                onClick={() => onRemove(key)}
+                                aria-label={`Remove ${name} from room`}
+                            >
+                                <X size={14} aria-hidden="true" />
+                            </button>
+                        )}
+                    </div>
+                );
+            })}
         </div>
     );
-
 }
 
 export default PlayArea;

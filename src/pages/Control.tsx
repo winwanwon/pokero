@@ -6,6 +6,7 @@ import { Info } from 'lucide-react';
 
 import { AppState, PokerMode } from "../enum";
 import { isValidRoomName } from "../utils";
+import { useDarkMode } from "../hooks/useDarkMode";
 
 import OptionButtonGroup from "../components/OptionButtonGroup";
 import OfflineIndicator from "../components/OfflineIndicator";
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const Control: React.FC<Props> = (props: Props) => {
+    useDarkMode();
     const app = props.firebaseApp;
     const database = getDatabase(app);
     const uuid = window.localStorage.getItem("uuid")
@@ -63,13 +65,14 @@ const Control: React.FC<Props> = (props: Props) => {
             appState={appState}
             onOptionSelect={onOptionSelect}
             visibility={true}
+            compact
         />
     );
 
     const renderWaitMessage = () => {
         return (
             <p className="text-center">
-                Options will be available after the votes are reset.
+                You can vote again when the next round starts.
             </p>
         )
     }
@@ -77,11 +80,11 @@ const Control: React.FC<Props> = (props: Props) => {
     return (
         <>
             <OfflineIndicator />
-            <div className="flex h-screen justify-center items-center">
-            <div className="flex flex-col gap-4">
+            <div className="flex h-screen justify-center items-center bg-background text-foreground p-3">
+            <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-center">
-                    <Info size={16} />
-                    <span className="text-xs ml-2">Selecting an option for</span>
+                    <Info size={16} aria-hidden="true" />
+                    <span className="text-xs ml-2">Voting as</span>
                     <span className="text-xs font-semibold">&nbsp;{name}</span>
                 </div>
                 {appState === AppState.Init && optionButtons}

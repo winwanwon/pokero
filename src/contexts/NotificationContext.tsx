@@ -1,28 +1,67 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useState, useEffect, ReactNode } from 'react';
+import { toast } from '@/hooks/use-toast';
+
+const isSupported = 'Notification' in window;
 
 interface NotificationContextType {
+  notificationsSupported: boolean;
   notificationsEnabled: boolean;
   toggleNotifications: () => void;
+  requestNotificationPermission: () => Promise<NotificationPermission>;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+  const [optedIn, setOptedIn] = useState(() => {
     const stored = localStorage.getItem('notificationsEnabled');
     return stored !== null ? stored === 'true' : true;
   });
+  const [permission, setPermission] = useState<NotificationPermission>(isSupported ? Notification.permission : 'denied');
 
   useEffect(() => {
-    localStorage.setItem('notificationsEnabled', String(notificationsEnabled));
-  }, [notificationsEnabled]);
+    localStorage.setItem('notificationsEnabled', String(optedIn));
+  }, [optedIn]);
 
-  const toggleNotifications = () => {
-    setNotificationsEnabled((prev) => !prev);
+  const requestNotificationPermission = useCallback(async () => {
+    if (!isSupported) return 'denied';
+    const result = Notification.permission === 'default'
+      ? await Notification.requestPermission()
+      : Notification.permission;
+    setPermission(result);
+    return result;
+  }, []);
+
+  const toggleNotifications = async () => {
+    if (!isSupported) return;
+
+    if (Notification.permission === 'denied') {
+      setPermission('denied');
+      toast({
+        title: 'Notifications are blocked',
+        description: "Turn them on in your browser's site settings.",
+      });
+      return;
+    }
+
+    if (Notification.permission === 'default') {
+      setOptedIn((await requestNotificationPermission()) === 'granted');
+      return;
+    }
+
+    setPermission('granted');
+    setOptedIn((prev) => !prev);
   };
 
   return (
-    <NotificationContext.Provider value={{ notificationsEnabled, toggleNotifications }}>
+    <NotificationContext.Provider
+      value={{
+        notificationsSupported: isSupported,
+        notificationsEnabled: optedIn && permission === 'granted',
+        toggleNotifications,
+        requestNotificationPermission,
+      }}
+    >
       {children}
     </NotificationContext.Provider>
   );
