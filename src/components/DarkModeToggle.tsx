@@ -11,7 +11,7 @@ const DarkModeToggle: React.FC = () => {
       variant="ghost"
       size="icon"
       onClick={toggleDarkMode}
-      className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      className="h-11 w-11 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDarkMode ? (

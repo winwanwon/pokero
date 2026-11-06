@@ -8,5 +8,5 @@ export interface UserDatabase {
 
 interface User {
     name: string;
-    selectedOption: number;
+    selectedOption: number | string;
 }

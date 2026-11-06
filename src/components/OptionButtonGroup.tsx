@@ -1,17 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { ExternalLink, ChevronUp, Keyboard } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 
 import { keyMap, reverseKeyMap } from '../constants/keyMap';
 import { AppState, PokerMode } from '../enum';
-import { PokerModeOptions } from '../constants/pokerMode';
+import { getPokerOptions } from '../constants/pokerMode';
 
 interface OwnProps {
     appState: AppState;
@@ -23,11 +17,12 @@ interface OwnProps {
     setVisibility?: React.Dispatch<React.SetStateAction<boolean>>;
     enableExtraFn?: boolean;
     handleExtraFn?: () => void;
+    compact?: boolean;
 }
 
 const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
-    const { pokerMode, selectedOption, setSelectedOption, appState, onOptionSelect, visibility, setVisibility, enableExtraFn, handleExtraFn } = props;
-    const options = PokerModeOptions.find(p => p.id === pokerMode)?.value || [0, 1, 2, 3, 5, 8, 13];
+    const { pokerMode, selectedOption, setSelectedOption, appState, onOptionSelect, visibility, setVisibility, enableExtraFn, handleExtraFn, compact } = props;
+    const options = getPokerOptions(pokerMode);
 
     const selectOption = (option: number | string) => {
         const opt = option === selectedOption ? -1 : option;
@@ -53,31 +48,31 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         };
     }, [options, selectedOption]);
 
+    const hasLongLabel = options.some((option) => String(option).length > 2);
+    const cardWidth = () => {
+        if (compact) return 'w-12';
+        return options.length > 7 ? 'w-[60px]' : 'w-11 sm:w-[60px]';
+    };
+
     const renderOptions = options.map((option, index) => {
-        const onClick = () => {
-            selectOption(option);
-        };
         const isSelected = option === selectedOption;
+        const stateStyles = isSelected
+            ? 'border-primary bg-primary text-primary-foreground sm:-translate-y-1.5'
+            : 'border-input bg-card text-card-foreground hover:border-primary';
         return (
-            <TooltipProvider key={index}>
-                <Tooltip open={!visibility}>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant={isSelected && visibility ? 'default' : 'outline'}
-                            onClick={onClick}
-                            disabled={!visibility}
-                            className="flex-1 min-h-[44px] min-w-[44px] border-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-base sm:text-sm active:scale-95 transition-transform duration-100"
-                            aria-label={`Select ${option} points (keyboard shortcut: ${reverseKeyMap[index]})`}
-                            aria-pressed={isSelected}
-                        >
-                            {option}
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Keyboard: {reverseKeyMap[index]}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+            <button
+                key={index}
+                type="button"
+                onClick={() => selectOption(option)}
+                className={`relative flex aspect-[5/7] flex-none items-center justify-center rounded-md border font-mono font-semibold shadow-sm transition duration-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${cardWidth()} ${stateStyles} ${hasLongLabel ? 'text-[13px] sm:text-[15px]' : 'text-lg sm:text-xl'}`}
+                aria-label={`Vote ${option} (keyboard shortcut: ${reverseKeyMap[index]})`}
+                aria-pressed={isSelected}
+            >
+                {option}
+                <span className="absolute bottom-0.5 right-1 hidden text-[11px] font-medium sm:block" aria-hidden="true">
+                    {reverseKeyMap[index]}
+                </span>
+            </button>
         );
     });
 
@@ -86,52 +81,43 @@ const OptionButtonGroup: React.FC<OwnProps> = (props: OwnProps) => {
         handleExtraFn && handleExtraFn();
     };
 
-    const renderExtraFn = () => {
-        return (
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="outline"
-                            onClick={onExtraFnClick}
-                            className="hidden sm:inline-flex min-h-[44px] min-w-[44px] px-3 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-95 transition-transform duration-100"
-                            aria-label="Open options in new tab"
-                        >
-                            <ExternalLink size={16} />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                        <p>Open options in new tab</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        );
-    }
+    const onHideOptions = () => {
+        setVisibility && setVisibility(false);
+    };
 
     const onShowOptions = () => {
         setVisibility && setVisibility(true);
     };
 
-    const getKeyboardHint = () => {
-        const allKeys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O'];
-        const relevantKeys = allKeys.slice(0, options.length);
-        return relevantKeys.join('-');
-    };
-
     return visibility ? (
-        <div className="w-full space-y-2">
-            <div className="hidden sm:flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Keyboard size={14} aria-hidden="true" />
-                <span>Press {getKeyboardHint()} to select</span>
-            </div>
-            <div className="flex gap-1 w-full" aria-disabled={appState === AppState.Revealed}>
+        <div className="flex w-full flex-col items-center gap-2.5" aria-disabled={appState === AppState.Revealed}>
+            <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
                 {renderOptions}
-                {enableExtraFn && renderExtraFn()}
             </div>
+            {enableExtraFn && (
+                <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+                    <Button
+                        variant="ghost"
+                        onClick={onHideOptions}
+                        className="h-11 px-3 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    >
+                        <ChevronDown aria-hidden="true" />
+                        Hide my cards
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        onClick={onExtraFnClick}
+                        className="hidden h-11 px-3 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:inline-flex"
+                    >
+                        <ExternalLink aria-hidden="true" />
+                        Open cards in a new window
+                    </Button>
+                </div>
+            )}
         </div>
     ) : (
-        <Button variant="ghost" onClick={onShowOptions}>
-            <ChevronUp className="mr-2" size={16} /> Show options
+        <Button variant="ghost" className="h-11" onClick={onShowOptions}>
+            <ChevronUp aria-hidden="true" /> Show my cards
         </Button>
     );
 }

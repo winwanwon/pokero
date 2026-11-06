@@ -1,30 +1,27 @@
 import { User } from "./types";
 
-export const getModeFromResult = (selectedUser: User[]): number => {
-    if (selectedUser.length < 1) return -1;
-    const resultDict: { [key: string]: number } = {};
-    selectedUser.forEach((user) => {
-        if (!!resultDict[user.selectedOption]) {
-            resultDict[user.selectedOption] += 1;
-        } else {
-            resultDict[user.selectedOption] = 1;
-        }
-    });
+export type PokerOption = number | string;
 
-    let mostChoosenOption: string[] = [];
-    Object.keys(resultDict).forEach((key: string) => {
-        if (mostChoosenOption.length === 0 || resultDict[key] > resultDict[mostChoosenOption[0]]) {
-            mostChoosenOption = [key];
-        } else if (resultDict[key] === resultDict[mostChoosenOption[0]]){
-            mostChoosenOption.push(key);
-        }
-    });
-
-    return mostChoosenOption.length === 1 ? parseInt(mostChoosenOption[0]) : -1;
+// Returns null when there is nothing to average, including text decks like T-Shirt Size.
+export const getAverageFromResult = (selectedUser: User[]): number | null => {
+    const votes = selectedUser.map((user) => user.selectedOption);
+    if (votes.length === 0 || votes.some((vote) => typeof vote !== "number")) return null;
+    return (votes as number[]).reduce((a, b) => a + b, 0) / votes.length;
 };
 
-export const getAverageFromResult = (selectedUser: User[]): number => {
-    return selectedUser.map(user => user.selectedOption).reduce((a, b) => a + b, 0) / selectedUser.length;
+export const getVoteCounts = (votes: PokerOption[]): Record<string, number> => {
+    const counts: Record<string, number> = {};
+    votes.forEach((vote) => {
+        counts[vote] = (counts[vote] || 0) + 1;
+    });
+    return counts;
+};
+
+// The most picked options in deck order. More than one means a tie.
+export const getMajorityFromResult = (selectedUser: User[], options: PokerOption[]): PokerOption[] => {
+    const counts = getVoteCounts(selectedUser.map((user) => user.selectedOption));
+    const top = Math.max(0, ...Object.values(counts));
+    return top === 0 ? [] : options.filter((option) => counts[option] === top);
 };
 
 export const isValidRoomName = (roomName: string): boolean => !!(roomName.match("^[a-zA-Z0-9-]*$") != null && roomName.length <= 16);

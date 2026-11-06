@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { useNotification } from '@/contexts/NotificationContext';
 
 const NotificationToggle: React.FC = () => {
-  const { notificationsEnabled, toggleNotifications } = useNotification();
+  const { notificationsSupported, notificationsEnabled, toggleNotifications } = useNotification();
+
+  if (!notificationsSupported) return null;
 
   return (
     <Button
       variant="ghost"
       size="icon"
       onClick={toggleNotifications}
-      className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      className="h-11 w-11 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       aria-label={notificationsEnabled ? 'Disable notifications' : 'Enable notifications'}
     >
       {notificationsEnabled ? (

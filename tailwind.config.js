@@ -11,6 +11,10 @@ module.exports = {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+  		fontFamily: {
+  			sans: ['Geist', 'system-ui', 'sans-serif'],
+  			mono: ['"Geist Mono"', 'ui-monospace', 'monospace']
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -24,7 +28,8 @@ module.exports = {
   			},
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
+  				foreground: 'hsl(var(--primary-foreground))',
+  				text: 'hsl(var(--primary-text))'
   			},
   			secondary: {
   				DEFAULT: 'hsl(var(--secondary))',

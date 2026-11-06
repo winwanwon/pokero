@@ -3,24 +3,20 @@ import React from 'react';
 interface Props {
     title: string;
     content: string;
-    chipContent?: string;
-    chipVariant?: 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
-    icon: JSX.Element;
+    visual: React.ReactNode;
 }
 
-const FeatureBox: React.FC<Props> = (props: Props) => (
-    <div className="px-8 py-6 rounded-lg shadow-sm bg-card border border-border">
-        <div className="rounded-full bg-primary w-14 h-14 mb-3 flex">
-            <div className="m-auto justify-center content-center">
-                {props.icon}
-            </div>
+const FeatureBox: React.FC<Props> = ({ title, content, visual }) => (
+    <div className="flex flex-col rounded-[10px] border border-border bg-card p-5">
+        <div className="mb-5 flex h-[84px] items-end" aria-hidden="true">
+            {visual}
         </div>
-        <div className="font-bold text-xl mt-4 mb-2 text-foreground">
-            {props.title}
-        </div>
-        <div className="text-foreground">
-            {props.content}
-        </div>
+        <h3 className="text-base font-semibold">
+            {title}
+        </h3>
+        <p className="mt-1 text-sm leading-normal text-muted-foreground">
+            {content}
+        </p>
     </div>
 );
 

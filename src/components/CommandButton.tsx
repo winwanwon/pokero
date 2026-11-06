@@ -23,7 +23,7 @@ const CommandButton: React.FC<OwnProps> = (props: OwnProps) => {
         <Button
             variant={getVariant()}
             onClick={onClick}
-            className="w-full min-h-[44px] text-base sm:text-sm active:scale-95 transition-transform duration-100"
+            className="h-[52px] w-full rounded-lg px-7 text-base font-semibold active:scale-95 transition-transform duration-100"
         >
             {content}
         </Button>

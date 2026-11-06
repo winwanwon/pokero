@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { FirebaseApp } from "firebase/app";
@@ -9,7 +9,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 import { AppState, PokerMode } from "../enum";
 import { User, UserDatabase } from "../types";
-import { getAverageFromResult, getModeFromResult, isValidRoomName, isValidUserName } from "../utils";
+import { getAverageFromResult, getMajorityFromResult, isValidRoomName, isValidUserName } from "../utils";
+import { getPokerOptions } from "../constants/pokerMode";
 import { useNotification } from "../contexts/NotificationContext";
 
 import PopUpModal from "../components/PopUpModal";
@@ -34,7 +35,8 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const uuid = window.localStorage.getItem("uuid") || uuidv4();
     window.localStorage.setItem("uuid", uuid);
     const { toast } = useToast();
-    const { notificationsEnabled } = useNotification();
+    const { notificationsEnabled, requestNotificationPermission } = useNotification();
+    const hasNotifiedRef = useRef(false);
 
     const params = useParams();
     const roomName = params.roomName?.toLowerCase() || "";
@@ -63,51 +65,41 @@ const InRoom: React.FC<Props> = (props: Props) => {
 
     // Request notification permission
     useEffect(() => {
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
-    }, []);
+        requestNotificationPermission();
+    }, [requestNotificationPermission]);
 
-    // Notify when user is last person who hasn't voted
+    // Notify once when the user becomes the last person who hasn't voted
     useEffect(() => {
-        if (appState !== AppState.Init) {
-            return;
-        }
-
-        if (!users || Object.keys(users).length === 0 || !users[uuid]) {
-            return;
-        }
-
         const userList = Object.keys(users);
-        const totalUsers = userList.length;
+        const isLastOne = appState === AppState.Init
+            && !!users[uuid]
+            && userList.length >= 2
+            && userList.every((key) => (users[key].selectedOption === -1) === (key === uuid));
 
-        if (totalUsers < 2) {
+        if (!isLastOne) {
+            hasNotifiedRef.current = false;
             return;
         }
 
-        const currentUserVoted = users[uuid].selectedOption !== -1;
-
-        if (currentUserVoted) {
+        if (hasNotifiedRef.current || !notificationsEnabled || !('Notification' in window) || Notification.permission !== 'granted') {
             return;
         }
 
-        const usersWhoHaventVoted = userList.filter(
-            (key) => users[key].selectedOption === -1
-        );
+        hasNotifiedRef.current = true;
+        const title = 'Your turn to vote';
+        const body = 'Everyone else has voted.';
 
-        const isLastOne = usersWhoHaventVoted.length === 1 && usersWhoHaventVoted[0] === uuid;
-
-        if (isLastOne && notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-            const notification = new Notification('Your turn! 🎯', {
-                body: 'You\'re the last person who hasn\'t voted yet.',
-            });
-
+        try {
+            const notification = new Notification(title, { body });
             notification.onclick = () => {
                 window.focus();
                 notification.close();
             };
+        } catch {
+            // Chrome on Android doesn't allow new Notification(), so show it in the page instead.
+            toast({ title, description: body });
         }
-    }, [users, uuid, appState, notificationsEnabled]);
+    }, [users, uuid, appState, notificationsEnabled, toast]);
 
     useEffect(() => {
         const usersUnsubscribe = onValue(
@@ -168,8 +160,8 @@ const InRoom: React.FC<Props> = (props: Props) => {
                 console.error('Error initializing state:', error);
                 setConnectionError(true);
                 toast({
-                    title: "Connection Error",
-                    description: "Failed to connect to Firebase. Please try again.",
+                    title: "Can't connect",
+                    description: "Check your connection and try again.",
                     variant: "destructive",
                 });
             });
@@ -257,7 +249,8 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const userList: User[] = Object.keys(users).map(key => users[key]);
     const selectedUser = userList.filter(x => x.selectedOption !== -1);
     const averageEsimation = getAverageFromResult(selectedUser);
-    const modeEstimation = getModeFromResult(selectedUser);
+    const pokerOptions = getPokerOptions(pokerMode);
+    const majorityOptions = getMajorityFromResult(selectedUser, pokerOptions);
 
     const handleExtraFn = () => {
         window.open(`${window.location.origin}/c/${roomName}`, '_blank', 'height=200,width=520');
@@ -280,10 +273,10 @@ const InRoom: React.FC<Props> = (props: Props) => {
     const getButtonContent = () => {
         switch (appState) {
             case AppState.Init:
-                return `Reveal all (${selectedUser.length}/${userList.length} selected)`;
+                return `Reveal cards (${selectedUser.length} of ${userList.length} voted)`;
             case AppState.Revealed:
             default:
-                return "Reset";
+                return "Next round";
         }
     };
 
@@ -300,29 +293,37 @@ const InRoom: React.FC<Props> = (props: Props) => {
         }
     };
 
+    const commandButton = (
+        <CommandButton
+            content={getButtonContent()}
+            color={getButtonColor()}
+            onClick={onButtonClick}
+            resetAppState={resetAppState}
+        />
+    );
+
     const renderContent = () => {
         if (isLoading) {
             return (
-                <div className="flex flex-col h-full w-full justify-between items-center px-4 sm:px-0">
-                    <div />
-                    <LoadingSkeleton count={3} />
-                    <div className="flex flex-col gap-2 w-full sm:min-w-[420px] max-w-2xl">
-                        <div className="h-12 bg-slate-200 rounded animate-pulse" />
+                <div className="flex flex-1 flex-col items-center gap-5 px-4 py-5 sm:px-8">
+                    <div className="flex flex-1 items-center">
+                        <LoadingSkeleton count={3} />
                     </div>
+                    <div className="h-[52px] w-full max-w-2xl rounded-lg bg-muted animate-pulse" />
                 </div>
             );
         }
 
         if (connectionError) {
             return (
-                <div className="flex flex-col h-full w-full justify-center items-center px-4">
-                    <div className="text-center max-w-md">
-                        <p className="text-lg font-semibold mb-2">Connection Error</p>
-                        <p className="text-sm text-slate-600 mb-4">
-                            Unable to connect to the server. Please check your internet connection.
+                <div className="flex flex-1 flex-col items-center justify-center px-4">
+                    <div className="w-full max-w-md text-center">
+                        <p className="text-xl font-semibold mb-2">Can't connect right now</p>
+                        <p className="text-sm text-muted-foreground mb-4">
+                            Check your internet connection and try again.
                         </p>
                         <CommandButton
-                            content="Retry Connection"
+                            content="Try again"
                             color="primary"
                             onClick={() => window.location.reload()}
                             resetAppState={resetAppState}
@@ -333,56 +334,66 @@ const InRoom: React.FC<Props> = (props: Props) => {
         }
 
         return (
-            <div className="flex flex-col h-full w-full justify-between items-center px-4 sm:px-0">
-                <div />
-                <PlayArea
-                    appState={appState}
-                    uuid={uuid}
-                    users={users}
-                    showDeleteButton={sudoMode}
-                    onRemove={onRemove}
-                />
-                <div className="flex flex-col gap-2 w-full sm:min-w-[420px] max-w-2xl">
-                    {appState === AppState.Revealed && <Result average={averageEsimation} mode={modeEstimation} />}
-                    {appState === AppState.Init && optionButtons}
-                    {/* {appState === AppState.Init && selectedUserDisplay} */}
-                    <CommandButton
-                        content={getButtonContent()}
-                        color={getButtonColor()}
-                        onClick={onButtonClick}
-                        resetAppState={resetAppState}
+            <main className="flex flex-1 flex-col min-h-0">
+                <div className="flex min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-8">
+                    <PlayArea
+                        appState={appState}
+                        uuid={uuid}
+                        users={users}
+                        showDeleteButton={sudoMode}
+                        onRemove={onRemove}
+                        majorityOptions={majorityOptions}
                     />
                 </div>
-            </div>
+                {appState === AppState.Revealed ? (
+                    <div className="border-t border-border bg-card p-4 sm:border-0 sm:bg-transparent sm:px-8 sm:pb-6 sm:pt-0">
+                        <Result
+                            average={averageEsimation}
+                            majorityOptions={majorityOptions}
+                            options={pokerOptions}
+                            votes={selectedUser.map((user) => user.selectedOption)}
+                            action={commandButton}
+                        />
+                    </div>
+                ) : (
+                    <section
+                        aria-label="Your estimate"
+                        className="flex flex-col items-center gap-3 border-t border-border bg-card p-4 sm:border-0 sm:bg-transparent sm:px-8 sm:pb-6 sm:pt-0"
+                    >
+                        {appState === AppState.Init && optionButtons}
+                        <div className="w-full max-w-2xl">{commandButton}</div>
+                    </section>
+                )}
+            </main>
         );
     };
 
     return (
         <>
             <OfflineIndicator />
-            <Header
-                render={
-                    <RoomDetail
-                        roomName={roomName}
-                        onUrlCopied={() => {
-                            logEvent(analytics, 'share');
-                            toast({
-                                title: "Room URL copied!",
-                                duration: 2000,
-                            });
-                        }}
-                        onOpenSettings={
-                            () => setSettingsOpen(true)
-                        }
-                    />
-                }
-            />
-            <div className="w-full max-w-none h-screen bg-background pt-20">
-                <div className="container mx-auto flex h-full pb-12">
+            <div className="flex h-[100dvh] w-full flex-col bg-background">
+                <Header
+                    render={
+                        <RoomDetail
+                            roomName={roomName}
+                            onUrlCopied={() => {
+                                logEvent(analytics, 'share');
+                                toast({
+                                    title: "Link copied",
+                                    duration: 2000,
+                                });
+                            }}
+                            onOpenSettings={
+                                () => setSettingsOpen(true)
+                            }
+                        />
+                    }
+                />
+                <div className="mx-auto flex min-h-0 w-full max-w-[1120px] flex-1 flex-col">
                     {!modalOpen && renderContent()}
                 </div>
                 <PopUpModal
-                    title={name ? `Welcome! ${name}` : "Enter your name to proceed"}
+                    title={name ? `Hi, ${name}` : "What's your name?"}
                     label="Name"
                     open={modalOpen}
                     value={name}
